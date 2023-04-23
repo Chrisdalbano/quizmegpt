@@ -1,18 +1,28 @@
 <template>
-  <div class="results-component">
-    <h2>Your score: {{ score }} / {{ totalQuestions }}</h2>
-  </div>
-</template>
-
-<script>
-export default {
-  name: "ResultsComponent",
-  props: {
-    score: Number,
-    totalQuestions: Number,
-  },
-};
-</script>
+    <div class="results-component">
+      <h2>Your score: {{ score }} / {{ totalQuestions }}</h2>
+      <div v-for="(question, index) in questions" :key="index">
+        <p>{{ question.question }}</p>
+        <p>
+          Your answer: {{ userAnswers[index] }} | Correct answer: {{
+            question.correctAnswer
+          }}
+        </p>
+      </div>
+    </div>
+  </template>
+  
+  <script>
+  export default {
+    name: 'ResultsComponent',
+    props: {
+      score: Number,
+      totalQuestions: Number,
+      questions: Array,
+      userAnswers: Array,
+    },
+  };
+  </script>
 
 <style scoped>
 .results-component {

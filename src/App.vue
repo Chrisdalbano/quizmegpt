@@ -9,19 +9,20 @@
       <div v-if="loading" class="loading-spinner"></div>
     </div>
 
-    <div v-if="quizGenerated">
-      <quiz-component
-        :questions="quizQuestions"
-        @submit-answers="showResults"
-      ></quiz-component>
-    </div>
+    <quiz-component
+      ref="quizComponent"
+      v-if="quizGenerated"
+      :questions="quizQuestions"
+      @submit-answers="showResults"
+    ></quiz-component>
 
-    <div v-if="resultsShown">
-      <results-component
-        :score="score"
-        :totalQuestions="totalQuestions"
-      ></results-component>
-    </div>
+    <results-component
+      v-if="resultsShown"
+      :score="score"
+      :totalQuestions="totalQuestions"
+      :questions="quizQuestions"
+      :userAnswers="userAnswers"
+    ></results-component>
   </div>
 </template>
 
@@ -45,6 +46,7 @@ export default {
       score: 0,
       totalQuestions: 1,
       loading: false,
+      userAnswers: [],
     };
   },
 
@@ -96,19 +98,15 @@ export default {
       const response = await this.getQuizFromChatGPT(this.quizTopic);
       this.loading = false; // Set loading to false after getting the response
 
-      // console.log("Generating question");
-      // const response = await this.getQuizFromChatGPT(this.quizTopic); // Use getQuizFromChatGPT instead of callApi
-      // console.log("Received response for question:", response);
-
       if (response) {
-        const question = this.parseQuizText(response);
-        console.log("Parsed question:", question);
-        if (question !== null) {
-          // Add this condition
-          this.quizQuestions = [question]; // Set the quizQuestions directly with the single question
+        const questions = this.parseQuizText(response);
+        console.log("Parsed questions:", questions);
+        if (questions !== null) {
+          this.quizQuestions = questions; // Set the quizQuestions with the questions array
+          this.totalQuestions = questions.length; // Update totalQuestions
           this.quizGenerated = true; // Set quizGenerated to true
         } else {
-          console.error("Failed to parse question from API response");
+          console.error("Failed to parse questions from API response");
         }
       }
 
@@ -116,7 +114,7 @@ export default {
     },
     async getQuizFromChatGPT(topic) {
       const apiKey = process.env.VUE_APP_CHATGPT_API_KEY;
-      const prompt = `Create a question about ${topic}, with 3 multiple choice answers. Indicate the correct answer for the question with a letter (A, B, or C).`;
+      const prompt = `Create 3 questions about ${topic}, each with 3 multiple choice answers. Indicate the correct answer for each question with a letter (A, B, or C).`;
       try {
         const response = await axios.post(
           "https://api.openai.com/v1/chat/completions",
@@ -140,11 +138,12 @@ export default {
     },
     parseQuizText(text) {
       const regex =
-        /^(.+)\s*\n*\s*A\)(.+)\s*B\)(.+)\s*C\)(.+)\s*\n*\s*Answer:\s*(A|B|C)/gm;
-      const match = regex.exec(text);
+        /(?<=^|\n)\s*(.+)\s*\n*\s*A\)(.+)\s*B\)(.+)\s*C\)(.+)\s*\n*\s*Answer:\s*(A|B|C)/gm;
+      let match;
+      const questions = [];
 
-      if (match) {
-        return {
+      while ((match = regex.exec(text)) !== null) {
+        questions.push({
           question: match[1].trim(),
           options: [
             { text: match[2].trim(), value: "A" },
@@ -152,13 +151,14 @@ export default {
             { text: match[4].trim(), value: "C" },
           ],
           correctAnswer: match[5],
-        };
-      } else {
-        return null;
+        });
       }
+
+      return questions.length > 0 ? questions : null;
     },
     showResults(score) {
       this.score = score;
+      this.userAnswers = this.$refs.quizComponent.userAnswers; // Access userAnswers via ref
       this.resultsShown = true;
       this.quizGenerated = false;
     },
