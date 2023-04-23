@@ -6,6 +6,7 @@
         <input type="text" v-model="quizTopic" placeholder="Enter a topic" />
         <button @click="generateQuiz">Generate Quiz</button>
       </div>
+      <div v-if="loading" class="loading-spinner"></div>
     </div>
 
     <div v-if="quizGenerated">
@@ -43,6 +44,7 @@ export default {
       resultsShown: false,
       score: 0,
       totalQuestions: 1,
+      loading: false,
     };
   },
 
@@ -90,9 +92,13 @@ export default {
     },
 
     async generateQuiz() {
-      console.log("Generating question");
-      const response = await this.getQuizFromChatGPT(this.quizTopic); // Use getQuizFromChatGPT instead of callApi
-      console.log("Received response for question:", response);
+      this.loading = true; // Set loading to true before calling the API
+      const response = await this.getQuizFromChatGPT(this.quizTopic);
+      this.loading = false; // Set loading to false after getting the response
+
+      // console.log("Generating question");
+      // const response = await this.getQuizFromChatGPT(this.quizTopic); // Use getQuizFromChatGPT instead of callApi
+      // console.log("Received response for question:", response);
 
       if (response) {
         const question = this.parseQuizText(response);
@@ -226,6 +232,25 @@ button:hover {
   input[type="text"] {
     margin-bottom: 8px;
     margin-right: 0;
+  }
+}
+
+.loading-spinner {
+  width: 40px;
+  height: 40px;
+  margin: 0 auto;
+  border: 4px solid #f3f3f3;
+  border-top: 4px solid #007bff;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
   }
 }
 </style>
