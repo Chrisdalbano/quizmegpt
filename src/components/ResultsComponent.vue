@@ -1,28 +1,47 @@
 <template>
     <div class="results-component">
-      <h2>Your score: {{ score }} / {{ totalQuestions }}</h2>
-      <div v-for="(question, index) in questions" :key="index">
-        <p>{{ question.question }}</p>
-        <p>
-          Your answer: {{ userAnswers[index] }} | Correct answer: {{
-            question.correctAnswer
-          }}
-        </p>
-      </div>
+      <h2>Your Results:</h2>
+      <p>Your score: {{ score }} out of {{ totalQuestions }}</p>
+      <ol>
+        <li v-for="(question, index) in questions" :key="index">
+          <strong>{{ question.question }}</strong>
+          <p>
+            Your answer: {{ getAnswerText(question, userAnswers[index]) }}
+          </p>
+          <p v-if="isAnswerCorrect(question, userAnswers[index])" class="correct-answer">
+            Correct!
+          </p>
+          <p v-else class="incorrect-answer">
+            Incorrect. The correct answer is:
+            {{ getAnswerText(question, question.correctAnswer) }}
+          </p>
+        </li>
+      </ol>
     </div>
   </template>
-  
-  <script>
-  export default {
-    name: 'ResultsComponent',
-    props: {
-      score: Number,
-      totalQuestions: Number,
-      questions: Array,
-      userAnswers: Array,
+
+<script>
+export default {
+  name: "ResultsComponent",
+  props: {
+    score: Number,
+    totalQuestions: Number,
+    questions: Array,
+    userAnswers: Array,
+  },
+  methods: {
+    getAnswerText(question, answerValue) {
+      const answer = question.options.find(
+        (option) => option.value === answerValue
+      );
+      return answer ? answer.text : "N/A";
     },
-  };
-  </script>
+    isAnswerCorrect(question, userAnswer) {
+      return userAnswer === question.correctAnswer;
+    },
+  },
+};
+</script>
 
 <style scoped>
 .results-component {
@@ -40,5 +59,33 @@
   font-size: 1.5rem;
   font-weight: 500;
   color: #333;
+  margin-bottom: 20px;
+}
+
+.results-component ol {
+  width: 100%;
+  padding-left: 20px;
+}
+
+.results-component li {
+  margin-bottom: 10px;
+}
+
+.results-component strong {
+  display: block;
+  font-size: 1.1rem;
+  margin-bottom: 5px;
+}
+
+.results-component p {
+  margin-bottom: 5px;
+}
+
+.correct-answer {
+  color: green;
+}
+
+.incorrect-answer {
+  color: red;
 }
 </style>

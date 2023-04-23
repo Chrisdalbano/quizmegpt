@@ -5,6 +5,7 @@
       <div class="input-container">
         <input type="text" v-model="quizTopic" placeholder="Enter a topic" />
         <button @click="generateQuiz">Generate Quiz</button>
+        <p class="error-message">{{ errorMessage }}</p>
       </div>
       <div v-if="loading" class="loading-spinner"></div>
     </div>
@@ -47,6 +48,7 @@ export default {
       totalQuestions: 1,
       loading: false,
       userAnswers: [],
+      errorMessage: "",
     };
   },
 
@@ -94,23 +96,22 @@ export default {
     },
 
     async generateQuiz() {
-      this.loading = true; // Set loading to true before calling the API
+      this.loading = true;
       const response = await this.getQuizFromChatGPT(this.quizTopic);
-      this.loading = false; // Set loading to false after getting the response
+      this.loading = false;
 
       if (response) {
         const questions = this.parseQuizText(response);
-        console.log("Parsed questions:", questions);
         if (questions !== null) {
-          this.quizQuestions = questions; // Set the quizQuestions with the questions array
-          this.totalQuestions = questions.length; // Update totalQuestions
-          this.quizGenerated = true; // Set quizGenerated to true
+          this.quizQuestions = questions;
+          this.quizGenerated = true;
+          this.errorMessage = ""; // Reset the error message when the quiz is generated successfully
         } else {
           console.error("Failed to parse questions from API response");
+          this.errorMessage =
+            "Failed to generate quiz. Please try a different topic.";
         }
       }
-
-      console.log("quizQuestions updated:", this.quizQuestions);
     },
     async getQuizFromChatGPT(topic) {
       const apiKey = process.env.VUE_APP_CHATGPT_API_KEY;
@@ -252,5 +253,10 @@ button:hover {
   100% {
     transform: rotate(360deg);
   }
+}
+
+.error-message {
+  color: red;
+  margin-top: 10px;
 }
 </style>
