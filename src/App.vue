@@ -6,6 +6,7 @@
         <input type="text" v-model="quizTopic" placeholder="Enter a topic" />
         <button @click="generateQuiz">Generate Quiz</button>
       </div>
+    </div>
 
     <div v-if="quizGenerated">
       <quiz-component
