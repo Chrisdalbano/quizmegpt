@@ -1,10 +1,6 @@
 <template>
   <div class="container">
-    <div v-if="loggedInUser">
-      <p>Welcome, {{ loggedInUser.email }}!</p>
-      <button @click="logOut">Log Out</button>
-    </div>
-    <div v-else class="form-container">
+    <div class="form-container">
       <h2 v-if="isLoginForm">Log in</h2>
       <h2 v-else>Sign Up</h2>
       <form @submit.prevent="isLoginForm ? logIn() : signUp()">
@@ -37,6 +33,7 @@
             : "Already have an account? Log In"
         }}
       </button>
+      <div v-if="loading" class="loading">Loading...</div>
     </div>
   </div>
 </template>
@@ -50,18 +47,22 @@ import {
   signOut,
   onAuthStateChanged,
 } from "firebase/auth";
+import { useRouter } from "vue-router";
+
 export default {
-  setup() {
+  setup(props, { emit }) {
+    const router = useRouter();
     const email = ref("");
     const password = ref("");
     const passwordConfirmation = ref("");
     const error = ref("");
     const isLoginForm = ref(true);
     const successMessage = ref("");
-    const loggedInUser = ref(null);
+    const loggedInUser = ref(props.loggedInUser);
 
     onAuthStateChanged(auth, (user) => {
       loggedInUser.value = user;
+      emit("loggedInUserChanged", user);
     });
 
     const logOut = async () => {
@@ -69,6 +70,8 @@ export default {
         await signOut(auth);
         successMessage.value = "";
         error.value = "";
+        emit("loggedInUserChanged", null);
+        router.push({ name: "LogIn" }); // Redirect to LogIn page after logging out
       } catch (e) {
         error.value = e.message;
       }
@@ -78,6 +81,9 @@ export default {
       try {
         await signInWithEmailAndPassword(auth, email.value, password.value);
         error.value = "";
+        const user = auth.currentUser;
+        emit("loggedInUserChanged", user); // emit the loggedInUserChanged event with the user object
+        router.push({ name: "MyAccount" }); // Redirect to MyAccount page after successful login
       } catch (e) {
         error.value = e.message;
       }
@@ -93,6 +99,7 @@ export default {
         loggedInUser.value = userCredential.user;
         successMessage.value = "Account created successfully!";
         error.value = "";
+        router.push({ name: "MyAccount" }); // Redirect to MyAccount page after successful sign-up
       } catch (e) {
         error.value = e.message;
       }
@@ -125,7 +132,6 @@ export default {
   justify-content: center;
   align-items: center;
   height: 100vh;
-  background-color: #f2f2f2;
 }
 
 .form-container {
