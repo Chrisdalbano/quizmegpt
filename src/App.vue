@@ -79,6 +79,24 @@ const sampleQuiz = [
     ],
     correctAnswer: "B",
   },
+  {
+    question: "Which gas is most abundant in Earth's atmosphere?",
+    options: [
+      { text: "A. Nitrogen", value: "A" },
+      { text: "B. Oxygen", value: "B" },
+      { text: "C. Carbon Dioxide", value: "C" },
+    ],
+    correctAnswer: "A",
+  },
+  {
+    question: "What is the chemical symbol for Sodium?",
+    options: [
+      { text: "A. S", value: "A" },
+      { text: "B. Na", value: "B" },
+      { text: "C. Sn", value: "C" },
+    ],
+    correctAnswer: "B",
+  },
 ];
 
 export default {
@@ -95,7 +113,7 @@ export default {
       quizQuestions: [],
       resultsShown: false,
       score: 0,
-      totalQuestions: 3,
+      totalQuestions: 5,
       loading: false,
       userAnswers: [],
       errorMessage: "",
@@ -173,7 +191,7 @@ export default {
     },
     async getQuizFromChatGPT(topic, difficulty) {
       const apiKey = process.env.VUE_APP_CHATGPT_API_KEY;
-      const prompt = `Create 3 ${difficulty} questions about ${topic}, each with 3 multiple choice answers. Indicate the correct answer for each question with a letter (A, B, or C). Also, make sure that the response given matches the regex ${this.regex} for formatting purposes.`;
+      const prompt = `Create 5 ${difficulty} questions about ${topic}, each with 3 multiple choice answers. Indicate the correct answer for each question with a letter (A, B, or C). Also, make sure that the response given matches the regex ${this.regex} for formatting purposes.`;
       try {
         const response = await axios.post(
           "https://api.openai.com/v1/chat/completions",
@@ -307,7 +325,7 @@ button:hover {
   border: 4px solid #f3f3f3;
   border-top: 4px solid #007bff;
   border-radius: 50%;
-  animation: spin 1s linear infinite;
+  animation: spin 0.6s linear infinite;
 }
 
 @keyframes spin {
