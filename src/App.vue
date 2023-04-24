@@ -5,8 +5,8 @@
       <div class="input-container">
         <input type="text" v-model="quizTopic" placeholder="Enter a topic" />
         <button @click="generateQuiz">Generate Quiz</button>
-        <p class="error-message">{{ errorMessage }}</p>
       </div>
+      <p class="error-message">{{ errorMessage }}</p>
       <div v-if="loading" class="loading-spinner"></div>
     </div>
 
@@ -45,7 +45,7 @@ export default {
       quizQuestions: [],
       resultsShown: false,
       score: 0,
-      totalQuestions: 1,
+      totalQuestions: 3,
       loading: false,
       userAnswers: [],
       errorMessage: "",
@@ -115,7 +115,7 @@ export default {
     },
     async getQuizFromChatGPT(topic) {
       const apiKey = process.env.VUE_APP_CHATGPT_API_KEY;
-      const prompt = `Create 3 questions about ${topic}, each with 3 multiple choice answers. Indicate the correct answer for each question with a letter (A, B, or C).`;
+      const prompt = `Create 3 questions about ${topic}, each with 3 multiple choice answers. Indicate the correct answer for each question with a letter (A, B, or C). Also, make sure that the response given matches the regex ${this.regex} for formatting purposes.`;
       try {
         const response = await axios.post(
           "https://api.openai.com/v1/chat/completions",
