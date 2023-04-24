@@ -2,10 +2,21 @@
   <div id="app">
     <div class="container">
       <h1>Let's create a quiz! What do you want to be tested about?</h1>
+      <p class="instructions">
+        To create a quiz, enter a topic in the text box and click the "Generate
+        Quiz" button. Please note that the quality of the generated quiz may
+        vary depending on the complexity of the topic and the clarity of the
+        provided input. For No-API testing, click the "Load Sample Quiz" button
+        to load a predefined sample quiz. Enjoy testing your knowledge!
+      </p>
       <div class="input-container">
         <input type="text" v-model="quizTopic" placeholder="Enter a topic" />
         <button @click="generateQuiz">Generate Quiz</button>
+        <button @click="loadSampleQuiz" class="sample-button">
+          Load Sample Quiz
+        </button>
       </div>
+
       <p class="error-message">{{ errorMessage }}</p>
       <div v-if="loading" class="loading-spinner"></div>
     </div>
@@ -31,6 +42,36 @@
 import axios from "axios";
 import QuizComponent from "./components/QuizComponent.vue";
 import ResultsComponent from "./components/ResultsComponent.vue";
+
+const sampleQuiz = [
+  {
+    question: "What is the capital of France?",
+    options: [
+      { text: "A. Paris", value: "A" },
+      { text: "B. London", value: "B" },
+      { text: "C. Madrid", value: "C" },
+    ],
+    correctAnswer: "A",
+  },
+  {
+    question: "Which language is primarily used for web development?",
+    options: [
+      { text: "A. Python", value: "A" },
+      { text: "B. JavaScript", value: "B" },
+      { text: "C. C++", value: "C" },
+    ],
+    correctAnswer: "B",
+  },
+  {
+    question: "What is the largest planet in our solar system?",
+    options: [
+      { text: "A. Earth", value: "A" },
+      { text: "B. Jupiter", value: "B" },
+      { text: "C. Mars", value: "C" },
+    ],
+    correctAnswer: "B",
+  },
+];
 
 export default {
   name: "App",
@@ -59,6 +100,11 @@ export default {
   },
 
   methods: {
+    loadSampleQuiz() {
+      this.quizQuestions = sampleQuiz;
+      this.quizGenerated = true;
+      this.resultsShown = false;
+    },
     async callApi(prompt) {
       const apiKey = process.env.VUE_APP_CHATGPT_API_KEY;
       const response = await axios.post(
@@ -210,6 +256,8 @@ input[type="text"] {
 }
 
 button {
+  margin-left: 8px;
+  margin-bottom: 2px;
   font-size: 1rem;
   font-weight: 500;
   padding: 8px 12px;
@@ -221,8 +269,12 @@ button {
   transition: background-color 0.2s ease;
 }
 
+.sample-button {
+  background-color: rgb(223, 175, 18);
+}
+
 button:hover {
-  background-color: #0056b3;
+  background-color: #4e4e4e;
 }
 
 @media (max-width: 480px) {
@@ -258,5 +310,17 @@ button:hover {
 .error-message {
   color: red;
   margin-top: 10px;
+}
+
+.instructions {
+  display: inline-block;
+  background-color: #e7e7e7;
+  padding: 15px;
+  border-radius: 5px;
+  font-size: 0.9rem;
+  line-height: 1.4;
+  margin-bottom: 20px;
+  max-width: 600px;
+  color: #333;
 }
 </style>

@@ -1,8 +1,8 @@
 <template>
   <div class="quiz-component">
-    <div v-if="currentQuestionIndex < questions.length">
-      <p>{{ questions[currentQuestionIndex].question }}</p>
-      <div v-for="(option, optionIndex) in questions[currentQuestionIndex].options" :key="optionIndex">
+    <div class="question-wrapper" v-if="currentQuestionIndex < questions.length">
+      <p><b>{{ questions[currentQuestionIndex].question }}</b></p>
+      <div class="choice" v-for="(option, optionIndex) in questions[currentQuestionIndex].options" :key="optionIndex">
         <input
           type="radio"
           :name="'question' + currentQuestionIndex"
@@ -11,9 +11,9 @@
         />
         <label>{{ option.text }}</label>
       </div>
-      <button @click="nextQuestion" v-if="currentQuestionIndex < questions.length - 1">Next Question</button>
-      <button @click="submitAnswers" v-else>Submit</button>
     </div>
+    <button @click="nextQuestion" v-if="currentQuestionIndex < questions.length - 1">Next Question</button>
+    <button @click="submitAnswers" v-else>Submit</button>
   </div>
 </template>
 
@@ -56,19 +56,19 @@ export default {
   width: 100%;
 }
 
-.question {
+.question-wrapper {
+  background-color: #f3f3f3;
+  padding: 15px;
+  border-radius: 5px;
   margin-bottom: 20px;
+  width: 100%;
+  max-width: 600px;
 }
 
-.question-text {
-  font-size: 1.1rem;
-  margin-bottom: 5px;
-}
-
-.option {
+.choice {
   display: flex;
   align-items: center;
-  margin-bottom: 5px;
+  margin-bottom: 10px;
 }
 
 .option input {
