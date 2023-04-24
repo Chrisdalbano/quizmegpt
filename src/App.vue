@@ -11,6 +11,14 @@
       </p>
       <div class="input-container">
         <input type="text" v-model="quizTopic" placeholder="Enter a topic" />
+        <div class="selector-container">
+          <select v-model="difficultyLevel" class="difficulty-selector">
+            <option value="easy">Easy</option>
+            <option value="medium">Medium</option>
+            <option value="hard">Hard</option>
+          </select>
+        </div>
+
         <button @click="generateQuiz">Generate Quiz</button>
         <button @click="loadSampleQuiz" class="sample-button">
           Load Sample Quiz
@@ -81,6 +89,7 @@ export default {
   },
   data() {
     return {
+      difficultyLevel: "easy",
       quizTopic: "",
       quizGenerated: false,
       quizQuestions: [],
@@ -143,7 +152,10 @@ export default {
 
     async generateQuiz() {
       this.loading = true;
-      const response = await this.getQuizFromChatGPT(this.quizTopic);
+      const response = await this.getQuizFromChatGPT(
+        this.quizTopic,
+        this.difficultyLevel
+      );
       this.loading = false;
 
       if (response) {
@@ -159,9 +171,9 @@ export default {
         }
       }
     },
-    async getQuizFromChatGPT(topic) {
+    async getQuizFromChatGPT(topic, difficulty) {
       const apiKey = process.env.VUE_APP_CHATGPT_API_KEY;
-      const prompt = `Create 3 questions about ${topic}, each with 3 multiple choice answers. Indicate the correct answer for each question with a letter (A, B, or C). Also, make sure that the response given matches the regex ${this.regex} for formatting purposes.`;
+      const prompt = `Create 3 ${difficulty} questions about ${topic}, each with 3 multiple choice answers. Indicate the correct answer for each question with a letter (A, B, or C). Also, make sure that the response given matches the regex ${this.regex} for formatting purposes.`;
       try {
         const response = await axios.post(
           "https://api.openai.com/v1/chat/completions",
@@ -322,5 +334,18 @@ button:hover {
   margin-bottom: 20px;
   max-width: 600px;
   color: #333;
+}
+
+.selector-container {
+  display: inline-block;
+}
+
+.difficulty-selector {
+  padding: 5px 10px;
+  border: 1px solid #ccc;
+  border-radius: 3px;
+  font-size: 1rem;
+  background-color: #f9f9f9;
+  cursor: pointer;
 }
 </style>
