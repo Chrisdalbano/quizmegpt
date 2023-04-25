@@ -26,6 +26,9 @@
       </form>
       <p v-if="error" class="error">{{ error }}</p>
       <p v-if="successMessage" class="success">{{ successMessage }}</p>
+      <p v-if="accountCreated" class="account-created">
+        Account successfully created, go to log in to access your account.
+      </p>
       <button @click="toggleForm" class="toggle-button">
         {{
           isLoginForm
@@ -39,6 +42,8 @@
 </template>
 
 <script>
+import { collection, doc, setDoc } from "firebase/firestore";
+import { db } from "@/firebase.js"; // assuming you've exported Firestore instance as 'db' in firebase.js
 import { ref } from "vue";
 import { auth } from "@/firebase.js";
 import {
@@ -51,6 +56,7 @@ import { useRouter } from "vue-router";
 
 export default {
   setup(props, { emit }) {
+    const accountCreated = ref(false);
     const router = useRouter();
     const email = ref("");
     const password = ref("");
@@ -97,9 +103,22 @@ export default {
           password.value
         );
         loggedInUser.value = userCredential.user;
+
+        // Set initial user data in Firestore
+        const userData = {
+          level: 1,
+          xp: 0,
+          title: "Newbie Quizzer",
+        };
+        await setDoc(
+          doc(collection(db, "users"), loggedInUser.value.uid),
+          userData
+        );
+
         successMessage.value = "Account created successfully!";
+        accountCreated.value = true;
         error.value = "";
-        router.push({ name: "MyAccount" }); // Redirect to MyAccount page after successful sign-up
+        router.push({ name: "MyAccount" });
       } catch (e) {
         error.value = e.message;
       }
@@ -108,6 +127,7 @@ export default {
     const toggleForm = () => {
       isLoginForm.value = !isLoginForm.value;
       error.value = ""; // Reset the error message when toggling forms
+      accountCreated.value = false; // Reset the accountCreated flag when toggling forms
     };
 
     return {
@@ -122,6 +142,7 @@ export default {
       toggleForm,
       loggedInUser,
       logOut,
+      accountCreated,
     };
   },
 };
