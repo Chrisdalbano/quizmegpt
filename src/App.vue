@@ -1,40 +1,46 @@
 <template>
   <div id="app">
     <nav>
-      <router-link to="/" class="nav-link">Quiz me!</router-link>
-      <router-link v-if="!isLoggedIn" to="/login" class="nav-link"
+      <router-link class="nav-link" to="/">Home</router-link>
+      <router-link v-if="!loggedIn" class="nav-link" to="/login"
         >Log In</router-link
       >
-      <router-link
-        v-if="isLoggedIn"
-        :to="{ name: 'MyAccount', params: { loggedInUser } }"
-        class="nav-link"
+      <router-link v-if="loggedIn" class="nav-link" to="/my-account"
+        >My Account</router-link
       >
-        <i class="user-icon"></i>
-        My Account
-      </router-link>
     </nav>
-    <router-view :loggedInUser="loggedInUser" @loggedInUserChanged="updateLoggedInUser"></router-view>
+    <router-view
+      @loggedInUserChanged="updateLoggedInState"
+      :loggedInUser="loggedInUser"
+    ></router-view>
   </div>
 </template>
 
 <script>
+import { ref } from "vue";
+import { auth } from "@/firebase.js";
+import { onAuthStateChanged } from "firebase/auth";
+
 export default {
-  name: "App",
-  data() {
-    return {
-      loggedInUser: null,
+  setup() {
+    const loggedInUser = ref(null);
+    const loggedIn = ref(false);
+
+    onAuthStateChanged(auth, (user) => {
+      loggedInUser.value = user;
+      loggedIn.value = user ? true : false;
+    });
+
+    const updateLoggedInState = (user) => {
+      loggedInUser.value = user;
+      loggedIn.value = user ? true : false;
     };
-  },
-  methods: {
-    updateLoggedInUser(user) {
-      this.loggedInUser = user;
-    },
-  },
-  computed: {
-    isLoggedIn() {
-      return !!this.loggedInUser;
-    },
+
+    return {
+      loggedInUser,
+      loggedIn,
+      updateLoggedInState,
+    };
   },
 };
 </script>

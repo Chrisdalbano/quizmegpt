@@ -21,13 +21,15 @@ import { db } from "@/firebase.js";
 import { ref, onMounted, computed } from "vue";
 import { auth } from "@/firebase.js";
 import { signOut } from "firebase/auth";
+import { useRouter }  from "vue-router";
 
 export default {
   name: "MyAccount",
   props: {
     loggedInUser: Object,
   },
-  setup(props) {
+  setup(props, context) {
+    const router = useRouter();
     const userLevel = ref(null);
     const userTitle = ref(null);
     const userXp = ref(null);
@@ -41,14 +43,14 @@ export default {
     });
 
     const logOut = async () => {
-      try {
-        await signOut(auth);
-        this.$router.push("/login");
-        this.$emit("loggedInUserChanged", null);
-      } catch (e) {
-        console.error(e);
-      }
-    };
+  try {
+    await signOut(auth);
+    context.emit("loggedInUserChanged", null);
+    router.push("/");
+  } catch (e) {
+    console.error(e);
+  }
+};
 
     const fetchUserData = async () => {
       if (props.loggedInUser) {
