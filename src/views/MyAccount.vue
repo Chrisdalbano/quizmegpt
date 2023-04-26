@@ -4,10 +4,16 @@
     <h3 v-if="userLevel">Level: {{ userLevel }}</h3>
     <h3 v-if="userTitle">{{ userTitle }}</h3>
     <h3 v-if="userXp">XP: {{ userXp }}</h3>
-    <div class="exp-bar-container">
+    <div v-if="userLevel">
+      <div class="exp-bar-container">
       <div class="exp-bar" :style="{ width: expPercentage + '%' }"></div>
     </div>
     <p>{{ userXp }} / {{ nextLevelXp }} XP</p>
+    </div>
+    <div v-else>
+    <div class="loading-spinner"></div>
+  </div>
+    
     <button @click="logOut">Log Out</button>
   </div>
   <div v-else>
