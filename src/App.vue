@@ -1,7 +1,7 @@
 <template>
   <div id="app">
     <nav>
-      <router-link class="nav-link" to="/">Home</router-link>
+      <router-link class="nav-link" to="/">Quiz Me!</router-link>
       <router-link v-if="!loggedIn" class="nav-link" to="/login"
         >Log In</router-link
       >

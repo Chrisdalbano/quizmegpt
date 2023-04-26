@@ -106,6 +106,7 @@ export default {
 
         // Set initial user data in Firestore
         const userData = {
+          email: email.value,
           level: 1,
           xp: 0,
           title: "Newbie Quizzer",
