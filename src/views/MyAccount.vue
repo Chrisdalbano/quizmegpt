@@ -6,14 +6,14 @@
     <h3 v-if="userXp">XP: {{ userXp }}</h3>
     <div v-if="userLevel">
       <div class="exp-bar-container">
-      <div class="exp-bar" :style="{ width: expPercentage + '%' }"></div>
-    </div>
-    <p>{{ userXp }} / {{ nextLevelXp }} XP</p>
+        <div class="exp-bar" :style="{ width: expPercentage + '%' }"></div>
+      </div>
+      <p>{{ userXp }} / {{ nextLevelXp }} XP</p>
     </div>
     <div v-else>
-    <div class="loading-spinner"></div>
-  </div>
-    
+      <div class="loading-spinner"></div>
+    </div>
+
     <button @click="logOut">Log Out</button>
   </div>
   <div v-else>
@@ -24,21 +24,24 @@
 <script>
 import { doc, getDoc } from "firebase/firestore";
 import { db } from "@/firebase.js";
-import { ref, onMounted, computed } from "vue";
 import { auth } from "@/firebase.js";
 import { signOut } from "firebase/auth";
-import { useRouter }  from "vue-router";
+import { useRouter } from "vue-router";
+import { useStore } from "vuex";
+import { ref, computed, watch } from "vue";
 
 export default {
   name: "MyAccount",
-  props: {
-    loggedInUser: Object,
-  },
-  setup(props, context) {
+  props: {},
+  setup() {
+    const store = useStore();
     const router = useRouter();
     const userLevel = ref(null);
     const userTitle = ref(null);
     const userXp = ref(null);
+    const isLoading = ref(true);
+
+    const loggedInUser = computed(() => store.getters.loggedInUser);
 
     const expPercentage = computed(() => {
       return (userXp.value / nextLevelXp.value) * 100;
@@ -49,39 +52,41 @@ export default {
     });
 
     const logOut = async () => {
-  try {
-    await signOut(auth);
-    context.emit("loggedInUserChanged", null);
-    router.push("/");
-  } catch (e) {
-    console.error(e);
-  }
-};
+      try {
+        await signOut(auth);
+        router.push("/");
+      } catch (e) {
+        console.error(e);
+      }
+    };
 
     const fetchUserData = async () => {
-      if (props.loggedInUser) {
-        const userRef = doc(db, "users", props.loggedInUser.uid);
+      if (loggedInUser.value) {
+        const userRef = doc(db, "users", loggedInUser.value.uid);
         const userSnap = await getDoc(userRef);
         if (userSnap.exists()) {
           const userData = userSnap.data();
           userLevel.value = userData.level;
           userTitle.value = userData.title;
           userXp.value = userData.xp;
+          isLoading.value = false;
         }
       }
     };
 
-    onMounted(() => {
+    watch(loggedInUser, () => {
       fetchUserData();
     });
 
     return {
       logOut,
-      userLevel,
-      userTitle,
-      userXp,
-      expPercentage,
-      nextLevelXp,
+      loggedInUser,
+      isLoading,
+      userLevel: computed(() => userLevel.value),
+      userTitle: computed(() => userTitle.value),
+      userXp: computed(() => userXp.value),
+      expPercentage: computed(() => expPercentage.value),
+      nextLevelXp: computed(() => nextLevelXp.value),
     };
   },
 };

@@ -53,6 +53,7 @@ import {
   onAuthStateChanged,
 } from "firebase/auth";
 import { useRouter } from "vue-router";
+import { useStore } from "vuex";
 
 export default {
   setup(props, { emit }) {
@@ -65,10 +66,15 @@ export default {
     const isLoginForm = ref(true);
     const successMessage = ref("");
     const loggedInUser = ref(props.loggedInUser);
+    const store = useStore();
 
-    onAuthStateChanged(auth, (user) => {
-      loggedInUser.value = user;
-      emit("loggedInUserChanged", user);
+    onAuthStateChanged(auth, async (user) => {
+      if (user) {
+        await store.dispatch("fetchUserData", user.uid);
+      } else {
+        store.commit("setLoggedInUser", null);
+      }
+      emit("loggedInUserChanged", store.getters.loggedInUser);
     });
 
     const logOut = async () => {
@@ -88,7 +94,10 @@ export default {
         await signInWithEmailAndPassword(auth, email.value, password.value);
         error.value = "";
         const user = auth.currentUser;
-        emit("loggedInUserChanged", user); // emit the loggedInUserChanged event with the user object
+        if (user) {
+          await store.dispatch("fetchUserData", user.uid);
+        }
+        emit("loggedInUserChanged", store.getters.loggedInUser);
         router.push({ name: "MyAccount" }); // Redirect to MyAccount page after successful login
       } catch (e) {
         error.value = e.message;
@@ -115,6 +124,8 @@ export default {
           doc(collection(db, "users"), loggedInUser.value.uid),
           userData
         );
+
+        await store.dispatch("fetchUserData", loggedInUser.value.uid);
 
         successMessage.value = "Account created successfully!";
         accountCreated.value = true;
