@@ -1,36 +1,36 @@
 <template>
   <nav>
     <router-link class="nav-link" to="/">Quiz Me!</router-link>
-    <router-link v-if="!loggedIn" class="nav-link" to="/login">Log In</router-link>
-    <router-link v-if="loggedIn" class="nav-link" to="/my-account">My Account</router-link>
+    <router-link v-if="!loggedIn" class="nav-link" to="/login"
+      >Log In</router-link
+    >
+    <router-link v-if="loggedIn" class="nav-link" to="/my-account"
+      >My Account</router-link
+    >
   </nav>
-  <router-view
-    @loggedInUserChanged="updateLoggedInState"
-    :loggedInUser="loggedInUser"
-  ></router-view>
+  <router-view></router-view>
 </template>
 
 <script>
 import { computed } from "vue";
+import { useStore } from "vuex";
 
 export default {
   name: "NavBar",
   props: {
-    userData: Object,
+    userData: {
+      type: Object,
+      default: null,
+    }
   },
-  setup(props) {
-    const loggedInUser = computed(() => props.userData);
-    const loggedIn = computed(() => !!props.userData);
-
-    const updateLoggedInState = (user) => {
-      loggedInUser.value = user;
-      loggedIn.value = user ? true : false;
-    };
+  setup() {
+    const store = useStore();
+    const loggedInUser = computed(() => store.getters.loggedInUser);
+    const loggedIn = computed(() => !!loggedInUser.value);
 
     return {
       loggedInUser,
       loggedIn,
-      updateLoggedInState,
     };
   },
 };

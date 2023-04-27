@@ -13,6 +13,9 @@ export default {
   components: {
     NavBar,
   },
+  created() {
+    this.$store.dispatch("initAuthObserver");
+  },
   setup() {
     const store = useStore();
 
@@ -21,7 +24,9 @@ export default {
     onMounted(() => {
       // Dispatch the action to fetch user data when the component is created
       // Replace "yourUserId" with the actual user ID or a dynamic value
-      store.dispatch("fetchUserData", "yourUserId");
+      if (userData.value) {
+        store.dispatch("fetchUserData", userData.value.uid);
+      }
     });
 
     return {

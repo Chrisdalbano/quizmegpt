@@ -22,26 +22,24 @@
 </template>
 
 <script>
-import { doc, getDoc } from "firebase/firestore";
-import { db } from "@/firebase.js";
 import { auth } from "@/firebase.js";
 import { signOut } from "firebase/auth";
 import { useRouter } from "vue-router";
 import { useStore } from "vuex";
-import { ref, computed, watch } from "vue";
+import { computed, onMounted } from "vue";
 
 export default {
   name: "MyAccount",
   props: {},
+
   setup() {
     const store = useStore();
     const router = useRouter();
-    const userLevel = ref(null);
-    const userTitle = ref(null);
-    const userXp = ref(null);
-    const isLoading = ref(true);
 
     const loggedInUser = computed(() => store.getters.loggedInUser);
+    onMounted(() => {
+      store.dispatch("fetchUserData", loggedInUser.value?.uid);
+    });
 
     const expPercentage = computed(() => {
       return (userXp.value / nextLevelXp.value) * 100;
@@ -60,33 +58,19 @@ export default {
       }
     };
 
-    const fetchUserData = async () => {
-      if (loggedInUser.value) {
-        const userRef = doc(db, "users", loggedInUser.value.uid);
-        const userSnap = await getDoc(userRef);
-        if (userSnap.exists()) {
-          const userData = userSnap.data();
-          userLevel.value = userData.level;
-          userTitle.value = userData.title;
-          userXp.value = userData.xp;
-          isLoading.value = false;
-        }
-      }
-    };
-
-    watch(loggedInUser, () => {
-      fetchUserData();
-    });
+    // Add these computed properties
+    const userLevel = computed(() => loggedInUser.value?.level);
+    const userTitle = computed(() => loggedInUser.value?.title);
+    const userXp = computed(() => loggedInUser.value?.xp);
 
     return {
       logOut,
       loggedInUser,
-      isLoading,
-      userLevel: computed(() => userLevel.value),
-      userTitle: computed(() => userTitle.value),
-      userXp: computed(() => userXp.value),
-      expPercentage: computed(() => expPercentage.value),
-      nextLevelXp: computed(() => nextLevelXp.value),
+      userLevel,
+      userTitle,
+      userXp,
+      expPercentage,
+      nextLevelXp,
     };
   },
 };

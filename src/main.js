@@ -1,6 +1,12 @@
 import { createApp } from "vue";
 import App from "./App.vue";
 import router from "./router";
-import store from "./store"; // Change the import here to match the default export
+import store from "./store";
 
-createApp(App).use(router).use(store).mount("#app"); // Use the store here
+const app = createApp(App);
+app.use(store);
+app.use(router);
+
+store.dispatch("initAuthObserver").then(() => {
+  app.mount("#app");
+});

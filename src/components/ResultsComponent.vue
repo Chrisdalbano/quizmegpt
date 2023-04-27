@@ -1,28 +1,50 @@
 <template>
-    <div class="results-component">
-      <h2>Your Results:</h2>
-      <p>Your score: {{ score }} out of {{ totalQuestions }}</p>
-      <ol>
-        <li v-for="(question, index) in questions" :key="index">
-          <strong>{{ question.question }}</strong>
-          <p>
-            Your answer: {{ getAnswerText(question, userAnswers[index]) }}
-          </p>
-          <p v-if="isAnswerCorrect(question, userAnswers[index])" class="correct-answer">
-            Correct!
-          </p>
-          <p v-else class="incorrect-answer">
-            Incorrect. The correct answer is:
-            {{ getAnswerText(question, question.correctAnswer) }}
-          </p>
-        </li>
-      </ol>
-    </div>
-  </template>
+  <div class="results-component">
+    <h2>Your Results:</h2>
+    <p v-if="passedQuiz">
+      Congratulations! You passed the quiz and won {{ xpGained }} XP.
+    </p>
+    <p v-else>Sorry, you didn't pass the quiz. Keep trying!</p>
+    <p>Your score: {{ score }} out of {{ totalQuestions }}</p>
+    <ol>
+      <li v-for="(question, index) in questions" :key="index">
+        <strong>{{ question.question }}</strong>
+        <p>Your answer: {{ getAnswerText(question, userAnswers[index]) }}</p>
+        <p
+          v-if="isAnswerCorrect(question, userAnswers[index])"
+          class="correct-answer"
+        >
+          Correct!
+        </p>
+        <p v-else class="incorrect-answer">
+          Incorrect. The correct answer is:
+          {{ getAnswerText(question, question.correctAnswer) }}
+        </p>
+      </li>
+    </ol>
+  </div>
+</template>
 
 <script>
+import { mapActions } from "vuex";
+
 export default {
   name: "ResultsComponent",
+  computed: {
+    passedQuiz() {
+      return (this.score / this.totalQuestions) * 100 >= 60;
+    },
+    xpGained() {
+      return this.passedQuiz ? this.score * 10 : 0;
+    },
+  },
+  watch: {
+    passedQuiz(newValue) {
+      if (newValue) {
+        this.updateUserXP();
+      }
+    },
+  },
   props: {
     score: Number,
     totalQuestions: Number,
@@ -38,6 +60,13 @@ export default {
     },
     isAnswerCorrect(question, userAnswer) {
       return userAnswer === question.correctAnswer;
+    },
+    ...mapActions(["updateUserXP"]),
+    updateUserXP() {
+      if (this.$store.state.loggedInUser) {
+        const userId = this.$store.state.loggedInUser.uid;
+        this.updateUserXP({ userId, xpGained: this.xpGained });
+      }
     },
   },
 };
