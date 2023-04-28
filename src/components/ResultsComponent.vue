@@ -1,24 +1,27 @@
 <template>
-    <div class="results-component">
-      <h2>Your Results:</h2>
-      <p>Your score: {{ score }} out of {{ totalQuestions }}</p>
-      <ol>
-        <li v-for="(question, index) in questions" :key="index">
-          <strong>{{ question.question }}</strong>
-          <p>
-            Your answer: {{ getAnswerText(question, userAnswers[index]) }}
-          </p>
-          <p v-if="isAnswerCorrect(question, userAnswers[index])" class="correct-answer">
-            Correct!
-          </p>
-          <p v-else class="incorrect-answer">
-            Incorrect. The correct answer is:
-            {{ getAnswerText(question, question.correctAnswer) }}
-          </p>
-        </li>
-      </ol>
-    </div>
-  </template>
+  <div class="results-component">
+    <h2>Your Results:</h2>
+    <p>Your score: {{ score }} out of {{ totalQuestions }}</p>
+    <p>Your score: {{ score }} out of {{ totalQuestions }}</p>
+    <p>You earned {{ xpEarned }} XP for this quiz!</p>
+    <ol>
+      <li v-for="(question, index) in questions" :key="index">
+        <strong>{{ question.question }}</strong>
+        <p>Your answer: {{ getAnswerText(question, userAnswers[index]) }}</p>
+        <p
+          v-if="isAnswerCorrect(question, userAnswers[index])"
+          class="correct-answer"
+        >
+          Correct!
+        </p>
+        <p v-else class="incorrect-answer">
+          Incorrect. The correct answer is:
+          {{ getAnswerText(question, question.correctAnswer) }}
+        </p>
+      </li>
+    </ol>
+  </div>
+</template>
 
 <script>
 export default {
@@ -28,6 +31,7 @@ export default {
     totalQuestions: Number,
     questions: Array,
     userAnswers: Array,
+    xpEarned: Number,
   },
   methods: {
     getAnswerText(question, answerValue) {

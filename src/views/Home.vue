@@ -12,7 +12,11 @@
       <div class="input-container">
         <input type="text" v-model="quizTopic" placeholder="Enter a topic" />
         <div class="selector-container">
-          <select v-model="difficultyLevel" class="difficulty-selector" :disabled="loading">
+          <select
+            v-model="difficultyLevel"
+            class="difficulty-selector"
+            :disabled="loading"
+          >
             <option value="easy">Easy</option>
             <option value="medium">Medium</option>
             <option value="hard">Hard</option>
@@ -20,7 +24,11 @@
         </div>
 
         <button @click="generateQuiz" :disabled="loading">Generate Quiz</button>
-        <button @click="loadSampleQuiz" class="sample-button" :disabled="loading">
+        <button
+          @click="loadSampleQuiz"
+          class="sample-button"
+          :disabled="loading"
+        >
           Load Sample Quiz
         </button>
       </div>
@@ -42,11 +50,13 @@
       :totalQuestions="totalQuestions"
       :questions="quizQuestions"
       :userAnswers="userAnswers"
+      :xpEarned="xpEarned"
     ></results-component>
   </div>
 </template>
 
 <script>
+import { mapActions } from "vuex";
 import axios from "axios";
 import QuizComponent from "@/components/QuizComponent.vue";
 import ResultsComponent from "@/components/ResultsComponent.vue";
@@ -189,6 +199,17 @@ export default {
         }
       }
     },
+
+    async showResults(payload) {
+      this.score = payload.score;
+      this.userAnswers = this.$refs.quizComponent.userAnswers;
+      this.resultsShown = true;
+      this.quizGenerated = false;
+
+      // Call the Vuex action to update the user's XP
+      await this.updateUserXp(payload.xpEarned);
+    },
+    ...mapActions(["updateUserXp"]),
     async getQuizFromChatGPT(topic, difficulty) {
       const apiKey = process.env.VUE_APP_CHATGPT_API_KEY;
       const prompt = `Create 5 ${difficulty} questions about ${topic}, each with 3 multiple choice ${difficulty} answers. Indicate the correct answer for each question with a letter (A, B, or C). Also, make sure that the response given matches the regex ${this.regex} for formatting purposes.`;
@@ -232,12 +253,6 @@ export default {
       }
 
       return questions.length > 0 ? questions : null;
-    },
-    showResults(score) {
-      this.score = score;
-      this.userAnswers = this.$refs.quizComponent.userAnswers; // Access userAnswers via ref
-      this.resultsShown = true;
-      this.quizGenerated = false;
     },
   },
 };

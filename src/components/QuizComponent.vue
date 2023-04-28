@@ -1,8 +1,17 @@
 <template>
   <div class="quiz-component">
-    <div class="question-wrapper" v-if="currentQuestionIndex < questions.length">
-      <p><b>{{ questions[currentQuestionIndex].question }}</b></p>
-      <div class="choice" v-for="(option, optionIndex) in questions[currentQuestionIndex].options" :key="optionIndex">
+    <div
+      class="question-wrapper"
+      v-if="currentQuestionIndex < questions.length"
+    >
+      <p>
+        <b>{{ questions[currentQuestionIndex].question }}</b>
+      </p>
+      <div
+        class="choice"
+        v-for="(option, optionIndex) in questions[currentQuestionIndex].options"
+        :key="optionIndex"
+      >
         <input
           type="radio"
           :name="'question' + currentQuestionIndex"
@@ -12,7 +21,12 @@
         <label>{{ option.text }}</label>
       </div>
     </div>
-    <button @click="nextQuestion" v-if="currentQuestionIndex < questions.length - 1">Next Question</button>
+    <button
+      @click="nextQuestion"
+      v-if="currentQuestionIndex < questions.length - 1"
+    >
+      Next Question
+    </button>
     <button @click="submitAnswers" v-else>Submit</button>
   </div>
 </template>
@@ -42,7 +56,8 @@ export default {
           score++;
         }
       }
-      this.$emit("submit-answers", score);
+      const xpEarned = score * 10; // Modify this value to change XP per correct answer
+      this.$emit("submit-answers", { score, xpEarned });
     },
   },
 };
