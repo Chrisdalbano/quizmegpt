@@ -14,6 +14,10 @@ export default createStore({
 
       updateUserXp(state, xp) {
         state.loggedInUser.xp = xp;
+      },
+
+      updateUserLevel(state, level) {
+        state.loggedInUser.level = level;
       }
     },
     actions: {
@@ -42,6 +46,17 @@ export default createStore({
           commit("updateUserXp", newXP); // Commit the new XP value
         }
       },
+
+      async updateUserLevel({ commit, state}, level) {
+        if (state.loggedInUser) {
+          const userId = state.loggedInUser.uid;
+          const userRef = doc(collection(db, "users"), userId);
+          const newLevel = state.loggedInUser.level + level;
+          await updateDoc(userRef, { level: newLevel });
+
+          commit("updateUserLevel", newLevel);
+        }
+      }
     },
     getters: {
       // Define your getters here
