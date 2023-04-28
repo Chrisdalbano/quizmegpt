@@ -47,11 +47,11 @@
     <results-component
       v-if="resultsShown"
       :score="score"
-      :totalQuestions="totalQuestions"
+      :total-questions="quizQuestions.length"
       :questions="quizQuestions"
-      :userAnswers="userAnswers"
-      :xpEarned="xpEarned"
-    ></results-component>
+      :user-answers="userAnswers"
+      :xp-earned="xpEarned"
+    />
   </div>
 </template>
 
@@ -205,6 +205,7 @@ export default {
       this.userAnswers = this.$refs.quizComponent.userAnswers;
       this.resultsShown = true;
       this.quizGenerated = false;
+      this.xpEarned = payload.xpEarned; // Set the xpEarned value
 
       // Call the Vuex action to update the user's XP
       await this.updateUserXp(payload.xpEarned);
