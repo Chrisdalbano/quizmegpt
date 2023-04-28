@@ -1,11 +1,12 @@
 <template>
   <div id="app">
-    <NavBar :userData="userData"></NavBar>
+    <NavBar :loggedIn="loggedIn"></NavBar>
+    <router-view @loggedInUserChanged="updateLoggedInState" :loggedInUser="loggedInUser"></router-view>
   </div>
 </template>
 
 <script>
-import { computed, onMounted } from "vue";
+import { computed } from "vue";
 import { useStore } from "vuex";
 import NavBar from "./components/NavBar.vue";
 
@@ -15,17 +16,17 @@ export default {
   },
   setup() {
     const store = useStore();
-
-    const userData = computed(() => store.getters.loggedInUser);
-
-    onMounted(() => {
-      // Dispatch the action to fetch user data when the component is created
-      // Replace "yourUserId" with the actual user ID or a dynamic value
-      store.dispatch("fetchUserData", "yourUserId");
-    });
+    const loggedInUser = computed(() => store.getters.loggedInUser);
+    const loggedIn = computed(() => !!store.getters.loggedInUser);
+    
+    const updateLoggedInState = (user) => {
+      store.commit("setLoggedInUser", user);
+    };
 
     return {
-      userData,
+      loggedInUser,
+      loggedIn,
+      updateLoggedInState,
     };
   },
 };

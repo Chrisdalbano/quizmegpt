@@ -1,10 +1,9 @@
 <template>
   <div class="my-account" v-if="loggedInUser">
-    <h1>Welcome, {{ loggedInUser.email }}!</h1>
-    <h3 v-if="userLevel">Level: {{ userLevel }}</h3>
-    <h3 v-if="userTitle">{{ userTitle }}</h3>
-    <h3 v-if="userXp">XP: {{ userXp }}</h3>
-    <div v-if="userLevel">
+    <h2>Welcome, {{ loggedInUser.email }}!</h2>
+    <h3 v-if="userLevel !== null">Level: {{ userLevel }}</h3>
+    <h3 v-if="userTitle !== null">{{ userTitle }}</h3>
+    <div v-if="userLevel !== null">
       <div class="exp-bar-container">
         <div class="exp-bar" :style="{ width: expPercentage + '%' }"></div>
       </div>
@@ -28,12 +27,13 @@ import { auth } from "@/firebase.js";
 import { signOut } from "firebase/auth";
 import { useRouter } from "vue-router";
 import { useStore } from "vuex";
-import { ref, computed, watch } from "vue";
+import { ref, computed, watch, onMounted } from "vue";
 
 export default {
   name: "MyAccount",
   props: {},
-  setup() {
+
+  setup(_, { emit }) {
     const store = useStore();
     const router = useRouter();
     const userLevel = ref(null);
@@ -52,14 +52,14 @@ export default {
     });
 
     const logOut = async () => {
-      try {
-        await signOut(auth);
-        router.push("/");
-      } catch (e) {
-        console.error(e);
-      }
-    };
-
+  try {
+    await signOut(auth);
+    router.push("/");
+    emit("loggedInUserChanged", null); // Add this line
+  } catch (e) {
+    console.error(e);
+  }
+};
     const fetchUserData = async () => {
       if (loggedInUser.value) {
         const userRef = doc(db, "users", loggedInUser.value.uid);
@@ -77,6 +77,8 @@ export default {
     watch(loggedInUser, () => {
       fetchUserData();
     });
+
+    onMounted(fetchUserData); // Call fetchUserData when the component is mounted
 
     return {
       logOut,

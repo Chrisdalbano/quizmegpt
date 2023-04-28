@@ -18,6 +18,7 @@ export default createStore({
           const userDoc = await getDoc(doc(collection(db, "users"), userId));
           if (userDoc.exists()) {
             const userData = userDoc.data();
+            userData.uid = userId; // Add the user's uid to the userData object
             commit("setLoggedInUser", userData);
           } else {
             console.error("No user data found for the given user ID");

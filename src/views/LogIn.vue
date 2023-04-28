@@ -49,14 +49,12 @@ import { auth } from "@/firebase.js";
 import {
   signInWithEmailAndPassword,
   createUserWithEmailAndPassword,
-  signOut,
-  onAuthStateChanged,
 } from "firebase/auth";
 import { useRouter } from "vue-router";
 import { useStore } from "vuex";
 
 export default {
-  setup(props, { emit }) {
+  setup() {
     const accountCreated = ref(false);
     const router = useRouter();
     const email = ref("");
@@ -65,31 +63,11 @@ export default {
     const error = ref("");
     const isLoginForm = ref(true);
     const successMessage = ref("");
-    const loggedInUser = ref(props.loggedInUser);
     const store = useStore();
-
-    onAuthStateChanged(auth, async (user) => {
-      if (user) {
-        await store.dispatch("fetchUserData", user.uid);
-      } else {
-        store.commit("setLoggedInUser", null);
-      }
-      emit("loggedInUserChanged", store.getters.loggedInUser);
-    });
-
-    const logOut = async () => {
-      try {
-        await signOut(auth);
-        successMessage.value = "";
-        error.value = "";
-        emit("loggedInUserChanged", null);
-        router.push({ name: "LogIn" }); // Redirect to LogIn page after logging out
-      } catch (e) {
-        error.value = e.message;
-      }
-    };
+    const loading = ref(false);
 
     const logIn = async () => {
+      loading.value = true;
       try {
         await signInWithEmailAndPassword(auth, email.value, password.value);
         error.value = "";
@@ -97,10 +75,11 @@ export default {
         if (user) {
           await store.dispatch("fetchUserData", user.uid);
         }
-        emit("loggedInUserChanged", store.getters.loggedInUser);
         router.push({ name: "MyAccount" }); // Redirect to MyAccount page after successful login
       } catch (e) {
         error.value = e.message;
+      } finally {
+        loading.value = false;
       }
     };
 
@@ -111,7 +90,6 @@ export default {
           email.value,
           password.value
         );
-        loggedInUser.value = userCredential.user;
 
         // Set initial user data in Firestore
         const userData = {
@@ -121,11 +99,11 @@ export default {
           title: "Newbie Quizzer",
         };
         await setDoc(
-          doc(collection(db, "users"), loggedInUser.value.uid),
+          doc(collection(db, "users"), userCredential.user.uid),
           userData
         );
 
-        await store.dispatch("fetchUserData", loggedInUser.value.uid);
+        await store.dispatch("fetchUserData", userCredential.user.uid);
 
         successMessage.value = "Account created successfully!";
         accountCreated.value = true;
@@ -152,8 +130,6 @@ export default {
       signUp,
       isLoginForm,
       toggleForm,
-      loggedInUser,
-      logOut,
       accountCreated,
     };
   },
