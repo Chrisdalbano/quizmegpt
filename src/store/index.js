@@ -36,31 +36,32 @@ export default createStore({
       }
     },
 
-    async updateUserXp({ commit, state }, xp) {
+    async updateUserXp({ commit, dispatch, state }, xp) {
       if (state.loggedInUser) {
         const userId = state.loggedInUser.uid;
         const userRef = doc(collection(db, "users"), userId);
-        const newXP = state.loggedInUser.xp + xp; // Add the XP earned to the user's current XP
-        await updateDoc(userRef, { xp: newXP }); // Update the XP value in the Firestore
-
-        commit("updateUserXp", newXP); // Commit the new XP value
+        const newXP = state.loggedInUser.xp + xp;
+        await updateDoc(userRef, { xp: newXP });
+    
+        commit("updateUserXp", newXP);
+        dispatch("updateUserTitle", newXP); // Pass the newXP value to the updateUserTitle action
       }
     },
 
-    async updateUserTitle({ commit, state }) {
+    async updateUserTitle({ commit, state }, newXP) {
       if (state.loggedInUser) {
         const userId = state.loggedInUser.uid;
         const userRef = doc(collection(db, "users"), userId);
-        const currentXp = state.loggedInUser.xp;
-
+        const currentXp = newXP || state.loggedInUser.xp; // Use the newXP value if provided
+    
         let newTitle = state.loggedInUser.title;
-
+    
         if (currentXp >= 250) {
           newTitle = "PRO Quizzer";
         } else if (currentXp >= 100) {
           newTitle = "Amateur Quizzer";
         }
-
+    
         if (newTitle !== state.loggedInUser.title) {
           await updateDoc(userRef, { title: newTitle });
           commit("updateUserTitle", newTitle); // Use the new mutation

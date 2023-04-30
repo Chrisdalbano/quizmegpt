@@ -213,7 +213,7 @@ export default {
     ...mapActions(["updateUserXp"]),
     async getQuizFromChatGPT(topic, difficulty) {
       const apiKey = process.env.VUE_APP_CHATGPT_API_KEY;
-      const prompt = `Create 5 ${difficulty} questions about ${topic}, each with 3 multiple choice ${difficulty} answers. Indicate the correct answer for each question with a letter (A, B, or C). Also, make sure that the response given matches the regex ${this.regex} for formatting purposes.`;
+      const prompt = `Create 5 ${difficulty} questions about ${topic}, each with 3 multiple choice ${difficulty} answers. Indicate the correct answer for each question with a letter (A, B, or C). Answer letters should use ')'. Also, make sure that the response given matches the regex ${this.regex} for formatting purposes.`;
       try {
         const response = await axios.post(
           "https://api.openai.com/v1/chat/completions",
