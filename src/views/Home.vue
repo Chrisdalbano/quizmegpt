@@ -209,8 +209,9 @@ export default {
 
       // Call the Vuex action to update the user's XP
       await this.updateUserXp(payload.xpEarned);
+      await this.saveQuizToHistory({ ...payload, userAnswers: this.userAnswers });
     },
-    ...mapActions(["updateUserXp"]),
+    ...mapActions(["updateUserXp", "saveQuizToHistory"]),
     async getQuizFromChatGPT(topic, difficulty) {
       const apiKey = process.env.VUE_APP_CHATGPT_API_KEY;
       const prompt = `Create 5 ${difficulty} questions about ${topic}, each with 3 multiple choice ${difficulty} answers. Indicate the correct answer for each question with a letter (A, B, or C). Answer letters should use ')'. Also, make sure that the response given matches the regex ${this.regex} for formatting purposes.`;

@@ -1,6 +1,7 @@
 import { createStore } from "vuex";
 import { db } from "@/firebase.js";
-import { collection, doc, getDoc, updateDoc } from "firebase/firestore";
+import { collection, doc, getDoc, updateDoc, addDoc } from "firebase/firestore";
+import { serverTimestamp } from "firebase/firestore";
 
 export default createStore({
   state: {
@@ -68,6 +69,22 @@ export default createStore({
         }
       }
     },
+    async saveQuizToHistory({ state }, { score, xpEarned, questions, userAnswers }) {
+      if (state.loggedInUser) {
+        const userId = state.loggedInUser.uid;
+        const quizHistoryRef = collection(db, "quizHistory");
+        const quizData = {
+          userId,
+          score,
+          xpEarned,
+          questions,
+          userAnswers,
+          timestamp: serverTimestamp(),
+        };
+        await addDoc(quizHistoryRef, quizData);
+      }
+    },
+
   },
   getters: {
     // Define your getters here

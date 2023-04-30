@@ -32,11 +32,21 @@
 </template>
 
 <script>
+import { addDoc, collection } from "firebase/firestore";
+import { db } from "@/firebase.js";
+
 export default {
   name: "QuizComponent",
   props: {
     questions: Array,
   },
+
+  computed: {
+    loggedInUser() {
+      return this.$store.getters.loggedInUser;
+    },
+  },
+
   data() {
     return {
       userAnswers: Array(this.questions.length).fill(null),
@@ -57,8 +67,21 @@ export default {
         }
       }
       const xpEarned = score * 10; // Modify this value to change XP per correct answer
-      this.$emit("submit-answers", { score, xpEarned });
+      this.saveQuizHistory({ score, xpEarned, questions: this.questions });
+      this.$emit("submit-answers", { score, xpEarned, questions: this.questions });
+      
     },
+
+    async saveQuizHistory(quizData) {
+      const quizHistoryRef = collection(db, "quizHistory");
+      const newQuizHistory = {
+        userId: this.loggedInUser.uid,
+        timestamp: new Date(),
+        ...quizData,
+      };
+      await addDoc(quizHistoryRef, newQuizHistory);
+    },
+    
   },
 };
 </script>

@@ -6,8 +6,20 @@
       <!-- <div class="exp-bar-container">
         <div class="exp-bar" :style="{ width: expPercentage + '%' }"></div>
       </div> -->
-      <h3>Your Quiz Score is: </h3>
+      <h3>Your Quiz Score is:</h3>
       <p>{{ userXp }} points</p>
+      <div class="quiz-history">
+    <h2>Quiz History</h2>
+    <div v-for="(quiz, index) in quizHistoryData" :key="index" class="quiz-history-item">
+      <h3>Quiz {{ index + 1 }}</h3>
+      <p>Score: {{ quiz.score }} / {{ quiz.questions.length }}</p>
+      <ul>
+        <li v-for="(question, qIndex) in quiz.questions" :key="qIndex" class="question-info">
+          <p><strong>Question:</strong> {{ question.question }}</p>
+        </li>
+      </ul>
+    </div>
+  </div>
     </div>
     <div v-else>
       <div class="loading-spinner"></div>
@@ -21,7 +33,15 @@
 </template>
 
 <script>
-import { doc, getDoc } from "firebase/firestore";
+import {
+  doc,
+  getDoc,
+  collection,
+  getDocs,
+  query,
+  where,
+  orderBy,
+} from "firebase/firestore";
 import { db } from "@/firebase.js";
 import { auth } from "@/firebase.js";
 import { signOut } from "firebase/auth";
@@ -40,6 +60,7 @@ export default {
     const userTitle = ref(null);
     const userXp = ref(null);
     const isLoading = ref(true);
+    const quizHistoryData = ref([]);
 
     const loggedInUser = computed(() => store.getters.loggedInUser);
 
@@ -52,14 +73,15 @@ export default {
     });
 
     const logOut = async () => {
-  try {
-    await signOut(auth);
-    router.push("/");
-    emit("loggedInUserChanged", null); // Add this line
-  } catch (e) {
-    console.error(e);
-  }
-};
+      try {
+        await signOut(auth);
+        router.push("/");
+        emit("loggedInUserChanged", null); // Add this line
+      } catch (e) {
+        console.error(e);
+      }
+    };
+
     const fetchUserData = async () => {
       if (loggedInUser.value) {
         const userRef = doc(db, "users", loggedInUser.value.uid);
@@ -74,11 +96,30 @@ export default {
       }
     };
 
+    const fetchQuizHistory = async () => {
+      if (loggedInUser.value) {
+        const userId = loggedInUser.value.uid;
+        const quizHistoryRef = collection(db, "quizHistory");
+        const querySnapshot = await getDocs(
+          query(
+            quizHistoryRef,
+            where("userId", "==", userId),
+            orderBy("timestamp", "desc")
+          )
+        );
+        quizHistoryData.value = querySnapshot.docs.map((doc) => doc.data());
+      }
+    };
+
     watch(loggedInUser, () => {
       fetchUserData();
+      fetchQuizHistory();
     });
 
-    onMounted(fetchUserData); // Call fetchUserData when the component is mounted
+    onMounted(async () => {
+      await fetchUserData();
+      await fetchQuizHistory();
+    });
 
     return {
       logOut,
@@ -89,6 +130,7 @@ export default {
       userXp: computed(() => userXp.value),
       expPercentage: computed(() => expPercentage.value),
       nextLevelXp: computed(() => nextLevelXp.value),
+      quizHistoryData: computed(() => quizHistoryData.value),
     };
   },
 };
@@ -132,5 +174,24 @@ button:hover {
   background-color: #4caf50;
   border-radius: 5px;
   transition: width 0.5s ease;
+}
+
+.quiz-history {
+  margin-top: 1rem;
+}
+
+.quiz-history-item {
+  background-color: #f0f0f0;
+  padding: 1rem;
+  margin-bottom: 1rem;
+  border-radius: 5px;
+}
+
+.question-info {
+  padding: 0.5rem 0;
+}
+
+.question-info:not(:last-child) {
+  border-bottom: 1px solid #ccc;
 }
 </style>
