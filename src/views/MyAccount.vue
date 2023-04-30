@@ -1,13 +1,13 @@
 <template>
   <div class="my-account" v-if="loggedInUser">
     <h2>Welcome, {{ loggedInUser.email }}!</h2>
-    <h3 v-if="userLevel !== null">Level: {{ userLevel }}</h3>
     <h3 v-if="userTitle !== null">{{ userTitle }}</h3>
     <div v-if="userLevel !== null">
-      <div class="exp-bar-container">
+      <!-- <div class="exp-bar-container">
         <div class="exp-bar" :style="{ width: expPercentage + '%' }"></div>
-      </div>
-      <p>{{ userXp }} / {{ nextLevelXp }} XP</p>
+      </div> -->
+      <h3>Your Quiz Score is: </h3>
+      <p>{{ userXp }} points</p>
     </div>
     <div v-else>
       <div class="loading-spinner"></div>

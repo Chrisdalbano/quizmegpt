@@ -3,7 +3,7 @@
     <h2>Your Results:</h2>
     <p>Your score: {{ score }} out of {{ totalQuestions }}</p>
     <p>Your score: {{ score }} out of {{ totalQuestions }}</p>
-    <p>You earned {{ xpEarned }} XP for this quiz!</p>
+    <p>You earned {{ xpEarned }} points for this quiz!</p>
     <ol>
       <li v-for="(question, index) in questions" :key="index">
         <strong>{{ question.question }}</strong>
