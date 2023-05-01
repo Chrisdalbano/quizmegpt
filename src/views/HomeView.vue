@@ -1,5 +1,4 @@
 <template>
-  <div id="app">
     <div class="container">
       <h1>Let's create a quiz! What do you want to be tested about?</h1>
       <p class="instructions">
@@ -52,7 +51,6 @@
       :user-answers="userAnswers"
       :xp-earned="xpEarned"
     />
-  </div>
 </template>
 
 <script>
@@ -110,7 +108,6 @@ const sampleQuiz = [
 ];
 
 export default {
-  name: "App",
   components: {
     QuizComponent,
     ResultsComponent,
