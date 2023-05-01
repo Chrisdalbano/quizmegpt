@@ -43,7 +43,7 @@ export default createStore({
         const userRef = doc(collection(db, "users"), userId);
         const newXP = state.loggedInUser.xp + xp;
         await updateDoc(userRef, { xp: newXP });
-    
+
         commit("updateUserXp", newXP);
         dispatch("updateUserTitle", newXP); // Pass the newXP value to the updateUserTitle action
       }
@@ -54,37 +54,51 @@ export default createStore({
         const userId = state.loggedInUser.uid;
         const userRef = doc(collection(db, "users"), userId);
         const currentXp = newXP || state.loggedInUser.xp; // Use the newXP value if provided
-    
+
         let newTitle = state.loggedInUser.title;
-    
+
         if (currentXp >= 250) {
           newTitle = "PRO Quizzer";
         } else if (currentXp >= 100) {
           newTitle = "Amateur Quizzer";
         }
-    
+
         if (newTitle !== state.loggedInUser.title) {
           await updateDoc(userRef, { title: newTitle });
           commit("updateUserTitle", newTitle); // Use the new mutation
         }
       }
     },
-    async saveQuizToHistory({ state }, { score, xpEarned, questions, userAnswers }) {
+    async saveQuizToHistory(
+      { state },
+      { score, xpEarned, questions, userAnswers }
+    ) {
       if (state.loggedInUser) {
         const userId = state.loggedInUser.uid;
         const quizHistoryRef = collection(db, "quizHistory");
-        const quizData = {
+
+        const quizData = questions.map((question, index) => {
+          const correctAnswer = question.options.find(
+            (option) => option.value === question.correctAnswer
+          ).text;
+          return {
+            question: question.question,
+            correctAnswer: correctAnswer,
+            userAnswer: userAnswers[index],
+          };
+        });
+
+        const quizHistoryData = {
           userId,
           score,
           xpEarned,
-          questions,
-          userAnswers,
+          questions: quizData,
           timestamp: serverTimestamp(),
         };
-        await addDoc(quizHistoryRef, quizData);
+
+        await addDoc(quizHistoryRef, quizHistoryData);
       }
     },
-
   },
   getters: {
     // Define your getters here

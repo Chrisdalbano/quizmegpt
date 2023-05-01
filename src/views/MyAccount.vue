@@ -18,14 +18,26 @@
         <span v-else>Hide Quiz History</span>
       </button>
       <div v-if="isQuizHistoryOpen">
-        <div v-for="(quiz, index) in quizHistoryData" :key="index" class="quiz-history-item">
+        <div
+          v-for="(quiz, index) in quizHistoryData"
+          :key="index"
+          class="quiz-history-item"
+        >
           <div class="quiz-header">
             <h3>Quiz {{ index + 1 }}</h3>
             <p>Your score: {{ quiz.score }} / {{ quiz.questions.length }}</p>
           </div>
           <div class="quiz-questions">
-            <div v-for="(question, qIndex) in quiz.questions" :key="qIndex" class="question-info">
-              <p><strong></strong> {{ question.question }}</p>
+            <div
+              v-for="(question, qIndex) in quiz.questions"
+              :key="qIndex"
+              class="question-info"
+            >
+              <p>Question {{ question.question }}</p>
+              <p>
+                <strong>Answer:</strong> {{ question.correctAnswer }}
+              </p>
+              
             </div>
           </div>
         </div>
@@ -59,94 +71,94 @@ export default {
   props: {},
 
   setup(_, { emit }) {
-  const store = useStore();
-  const router = useRouter();
-  const userLevel = ref(null);
-  const userTitle = ref(null);
-  const userXp = ref(null);
-  const isLoading = ref(true);
-  const quizHistoryData = ref([]);
-  const isQuizHistoryOpen = ref(false);
-  const showQuizHistory = ref(false);
+    const store = useStore();
+    const router = useRouter();
+    const userLevel = ref(null);
+    const userTitle = ref(null);
+    const userXp = ref(null);
+    const isLoading = ref(true);
+    const quizHistoryData = ref([]);
+    const isQuizHistoryOpen = ref(false);
+    const showQuizHistory = ref(false);
 
-  const loggedInUser = computed(() => store.getters.loggedInUser);
+    const loggedInUser = computed(() => store.getters.loggedInUser);
 
-  const expPercentage = computed(() => {
-    return (userXp.value / nextLevelXp.value) * 100;
-  });
+    const expPercentage = computed(() => {
+      return (userXp.value / nextLevelXp.value) * 100;
+    });
 
-  const nextLevelXp = computed(() => {
-    return userLevel.value * 100;
-  });
+    const nextLevelXp = computed(() => {
+      return userLevel.value * 100;
+    });
 
-  const logOut = async () => {
-    try {
-      await signOut(auth);
-      router.push("/");
-      emit("loggedInUserChanged", null); // Add this line
-    } catch (e) {
-      console.error(e);
-    }
-  };
-
-  const fetchUserData = async () => {
-    if (loggedInUser.value) {
-      const userRef = doc(db, "users", loggedInUser.value.uid);
-      const userSnap = await getDoc(userRef);
-      if (userSnap.exists()) {
-        const userData = userSnap.data();
-        userLevel.value = userData.level;
-        userTitle.value = userData.title;
-        userXp.value = userData.xp;
-        isLoading.value = false;
+    const logOut = async () => {
+      try {
+        await signOut(auth);
+        router.push("/");
+        emit("loggedInUserChanged", null); // Add this line
+      } catch (e) {
+        console.error(e);
       }
-    }
-  };
+    };
 
-  const fetchQuizHistory = async () => {
-    if (loggedInUser.value) {
-      const userId = loggedInUser.value.uid;
-      const quizHistoryRef = collection(db, "quizHistory");
-      const querySnapshot = await getDocs(
-        query(
-          quizHistoryRef,
-          where("userId", "==", userId),
-          orderBy("timestamp", "desc")
-        )
-      );
-      quizHistoryData.value = querySnapshot.docs.map((doc) => doc.data());
-    }
-  };
+    const fetchUserData = async () => {
+      if (loggedInUser.value) {
+        const userRef = doc(db, "users", loggedInUser.value.uid);
+        const userSnap = await getDoc(userRef);
+        if (userSnap.exists()) {
+          const userData = userSnap.data();
+          userLevel.value = userData.level;
+          userTitle.value = userData.title;
+          userXp.value = userData.xp;
+          isLoading.value = false;
+        }
+      }
+    };
 
-  const toggleQuizHistory = () => {
-    isQuizHistoryOpen.value = !isQuizHistoryOpen.value;
-  };
+    const fetchQuizHistory = async () => {
+      if (loggedInUser.value) {
+        const userId = loggedInUser.value.uid;
+        const quizHistoryRef = collection(db, "quizHistory");
+        const querySnapshot = await getDocs(
+          query(
+            quizHistoryRef,
+            where("userId", "==", userId),
+            orderBy("timestamp", "desc")
+          )
+        );
+        quizHistoryData.value = querySnapshot.docs.map((doc) => doc.data());
+      }
+    };
 
-  watch(loggedInUser, () => {
-    fetchUserData();
-    fetchQuizHistory();
-  });
+    const toggleQuizHistory = () => {
+      isQuizHistoryOpen.value = !isQuizHistoryOpen.value;
+    };
 
-  onMounted(async () => {
-    await fetchUserData();
-    await fetchQuizHistory();
-  });
+    watch(loggedInUser, () => {
+      fetchUserData();
+      fetchQuizHistory();
+    });
 
-  return {
-    logOut,
-    loggedInUser,
-    isLoading,
-    userLevel: computed(() => userLevel.value),
-    userTitle: computed(() => userTitle.value),
-    userXp: computed(() => userXp.value),
-    expPercentage: computed(() => expPercentage.value),
-    nextLevelXp: computed(() => nextLevelXp.value),
-    quizHistoryData: computed(() => quizHistoryData.value),
-    isQuizHistoryOpen: computed(() => isQuizHistoryOpen.value),
-    toggleQuizHistory,
-    showQuizHistory
-  };
-}
+    onMounted(async () => {
+      await fetchUserData();
+      await fetchQuizHistory();
+    });
+
+    return {
+      logOut,
+      loggedInUser,
+      isLoading,
+      userLevel: computed(() => userLevel.value),
+      userTitle: computed(() => userTitle.value),
+      userXp: computed(() => userXp.value),
+      expPercentage: computed(() => expPercentage.value),
+      nextLevelXp: computed(() => nextLevelXp.value),
+      quizHistoryData: computed(() => quizHistoryData.value),
+      isQuizHistoryOpen: computed(() => isQuizHistoryOpen.value),
+      toggleQuizHistory,
+      showQuizHistory,
+    };
+  },
 };
 </script>
 <style scoped>
