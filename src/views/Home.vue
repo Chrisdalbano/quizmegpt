@@ -209,7 +209,7 @@ export default {
 
       // Call the Vuex action to update the user's XP
       await this.updateUserXp(payload.xpEarned);
-      await this.saveQuizToHistory({ ...payload, userAnswers: this.userAnswers });
+      await this.saveQuizToHistory({...payload});
     },
     ...mapActions(["updateUserXp", "saveQuizToHistory"]),
     async getQuizFromChatGPT(topic, difficulty) {

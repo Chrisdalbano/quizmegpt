@@ -71,20 +71,19 @@ export default createStore({
     },
     async saveQuizToHistory(
       { state },
-      { score, xpEarned, questions, userAnswers }
+      { score, xpEarned, questions }
     ) {
       if (state.loggedInUser) {
         const userId = state.loggedInUser.uid;
         const quizHistoryRef = collection(db, "quizHistory");
 
-        const quizData = questions.map((question, index) => {
+        const quizData = questions.map((question) => {
           const correctAnswer = question.options.find(
             (option) => option.value === question.correctAnswer
           ).text;
           return {
             question: question.question,
             correctAnswer: correctAnswer,
-            userAnswer: userAnswers[index],
           };
         });
 

@@ -67,7 +67,7 @@ export default {
         }
       }
       const xpEarned = score * 10; // Modify this value to change XP per correct answer
-      this.saveQuizHistory({ score, xpEarned, questions: this.questions });
+      // this.saveQuizHistory({ score, xpEarned, questions: this.questions });
       this.$emit("submit-answers", { score, xpEarned, questions: this.questions });
       
     },
