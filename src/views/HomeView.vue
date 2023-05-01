@@ -19,6 +19,7 @@
             <option value="easy">Easy</option>
             <option value="medium">Medium</option>
             <option value="hard">Hard</option>
+            <option value="emoji">Emojis</option> // This is the new option
           </select>
         </div>
 
@@ -211,7 +212,12 @@ export default {
     ...mapActions(["updateUserXp", "saveQuizToHistory"]),
     async getQuizFromChatGPT(topic, difficulty) {
       const apiKey = process.env.VUE_APP_CHATGPT_API_KEY;
-      const prompt = `Create 5 ${difficulty} questions about ${topic}, each with 3 multiple choice ${difficulty} answers. Indicate the correct answer for each question with a letter (A, B, or C). Answer letters should use ')'. Also, make sure that the response given matches the regex ${this.regex} for formatting purposes.`;
+      var prompt = ``;
+      if(this.difficultyLevel == "emoji"){
+        prompt = `Create 5 questions about ${topic}, include emojis in the questions; each with 3 multiple choice answers, the choice answers can only be written using emojis. Indicate the correct answer for each question with a letter (A, B, or C). Answer letters should use ')'. Also, make sure that the response given matches the regex ${this.regex} for formatting purposes.`;
+      } else {
+        prompt = `Create 5 ${difficulty} questions about ${topic}, each with 3 multiple choice ${difficulty} answers. Indicate the correct answer for each question with a letter (A, B, or C). Answer letters should use ')'. Also, make sure that the response given matches the regex ${this.regex} for formatting purposes.`;
+      }
       try {
         const response = await axios.post(
           "https://api.openai.com/v1/chat/completions",
