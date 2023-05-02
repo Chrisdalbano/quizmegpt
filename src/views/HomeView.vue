@@ -214,7 +214,7 @@ methods: {
     const apiKey = process.env.VUE_APP_CHATGPT_API_KEY;
     var prompt = ``;
     if(this.difficultyLevel == "emoji"){
-      prompt = `Create 5 questions about ${topic}, include emojis in the questions; each with 3 multiple choice answers, the choice answers can only be written using emojis. Indicate the correct answer for each question with a letter (A, B, or C). Answer letters should use ')'. Also, make sure that the response given matches the regex ${this.regex} for formatting purposes.`;
+      prompt = `Create 5 questions to be responded with emojis about ${topic}; each with 3 multiple choice answers, the choice answers can only be written using multiple emojis, unless the question its a name, it would need to be followed an emoji after the name to represent the character. Indicate the correct answer for each question with a letter (A, B, or C). Answer letters should use ')'. Also, make sure that the response given matches the regex ${this.regex} for formatting purposes. `;
     } else {
       prompt = `Create 5 ${difficulty} questions about ${topic}, each with 3 multiple choice ${difficulty} answers. Indicate the correct answer for each question with a letter (A, B, or C). Answer letters should use ')'. Also, make sure that the response given matches the regex ${this.regex} for formatting purposes.`;
     }
