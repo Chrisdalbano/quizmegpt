@@ -1,12 +1,14 @@
 <template>
   <nav>
-    <router-link class="nav-link" to="/">Quiz Me!</router-link>
-    <router-link v-if="!loggedIn" class="nav-link" to="/login"
-      >Log In</router-link
-    >
-    <router-link v-if="loggedIn" class="nav-link" to="/my-account"
-      >My Account</router-link
-    >
+    <router-link to="/">
+      <img class="nav-icon" src="../assets/quizme-icon.png" alt="Quiz Me!" />
+    </router-link>
+    <router-link v-if="!loggedIn" to="/login">
+      <img class="nav-icon" src="../assets/User-icon.png" alt="Log In" />
+    </router-link>
+    <router-link v-if="loggedIn" to="/my-account">
+      <img class="nav-icon" src="../assets/User-icon.png" alt="My Account" />
+    </router-link>
   </nav>
 </template>
 
@@ -18,20 +20,29 @@ export default {
   },
 };
 </script>
+
 <style>
 nav {
   display: flex;
-  justify-content: space-around;
-  background-color: #333;
-  padding: 1rem;
+  flex-direction: column;
+  position: fixed;
+  top: 0;
+  right: 0px;
+  background-color: #30A0E0;
+  padding: 0.5rem;
+  border-bottom-left-radius: 41px;
+  border-bottom-right-radius: 41px;
 }
 
-.nav-link {
-  color: white;
-  text-decoration: none;
+.nav-icon {
+  width: 36px;
+  height: 36px;
+  cursor: pointer;
+  margin-bottom: 15px;
+  margin-top: 10px;
 }
 
-.nav-link:hover {
-  color: rgb(223, 175, 18);
+.nav-icon:hover {
+  opacity: 0.7;
 }
 </style>

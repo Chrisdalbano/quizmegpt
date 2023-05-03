@@ -3,7 +3,8 @@
     <div class="logout-container">
       <button @click="logOut">Log Out</button>
     </div>
-    <h2>Welcome, {{ loggedInUser.email }}!</h2>
+    <h3>Hi, {{ loggedInUser.email }}!</h3>
+    <p class="greeting-msg"></p>
     <h3 v-if="userTitle">{{ userTitle }}</h3>
     <div v-if="userLevel !== null">
       <h3>Your Quiz Score is:</h3>
@@ -14,8 +15,8 @@
     </div>
     <div class="quiz-history">
       <button @click="toggleQuizHistory">
-        <span v-if="!isQuizHistoryOpen">Show Quiz History</span>
-        <span v-else>Hide Quiz History</span>
+        <span v-if="!isQuizHistoryOpen">Review your past quizzes</span>
+        <span v-else>Close quiz History</span>
       </button>
       <div v-if="isQuizHistoryOpen">
         <div
