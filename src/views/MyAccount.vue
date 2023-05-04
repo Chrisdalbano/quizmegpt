@@ -1,24 +1,27 @@
 <template>
   <div class="my-account" v-if="loggedInUser">
-    <div class="logout-container">
-      <button @click="logOut">Log Out</button>
+    <div class="top-wrap">
+      <h3 class="user-display">{{ loggedInUser.email }}</h3>
+      <button @click="logOut" class="logout-bt">Log Out</button>
+      
     </div>
-    <h3>Hi, {{ loggedInUser.email }}!</h3>
+
     <p class="greeting-msg"></p>
-    <h3 v-if="userTitle">{{ userTitle }}</h3>
-    <div v-if="userLevel !== null">
-      <h3>Your Quiz Score is:</h3>
-      <p>{{ userXp }} points</p>
+    <h3 v-if="userTitle" class="user-tag">{{ userTitle }}</h3>
+    <div v-if="userLevel !== null" class="user-score">
+      <p><b>Your Quiz Score is</b></p>
+      <p class="user-points">{{ userXp }} </p>
     </div>
+    <img class="illustration-bookshelf" v-if="!quizGenerated" src="../assets/bookshelf-ill.png" />
     <div v-else>
       <div class="loading-spinner"></div>
     </div>
     <div class="quiz-history">
-      <button @click="toggleQuizHistory">
-        <span v-if="!isQuizHistoryOpen">Review your past quizzes</span>
-        <span v-else>Close quiz History</span>
+      <button class="history-bt" @click="toggleQuizHistory">
+        <span v-if="!isQuizHistoryOpen">Past quizzes ↓</span>
+        <span v-else>Past quizzes ↑</span>
       </button>
-      <div v-if="isQuizHistoryOpen">
+      <div v-if="!isQuizHistoryOpen">
         <div
           v-for="(quiz, index) in quizHistoryData"
           :key="index"
@@ -35,10 +38,7 @@
               class="question-info"
             >
               <p>Question {{ question.question }}</p>
-              <p>
-                <strong>Answer:</strong> {{ question.correctAnswer }}
-              </p>
-              
+              <p><strong>Answer:</strong> {{ question.correctAnswer }}</p>
             </div>
           </div>
         </div>
@@ -185,10 +185,6 @@ button {
   margin-top: 1rem;
 }
 
-button:hover {
-  background-color: rgb(223, 175, 18);
-}
-
 .exp-bar-container {
   width: 100%;
   height: 20px;
@@ -208,10 +204,10 @@ button:hover {
 }
 
 .quiz-history-item {
-  background-color: #f0f0f0;
+  background-color: #FFE3B3;
   padding: 1rem;
   margin-bottom: 1rem;
-  border-radius: 5px;
+  border-radius: 40.09px;
 }
 
 .question-info {
@@ -222,10 +218,68 @@ button:hover {
   border-bottom: 1px solid #ccc;
 }
 
-.logout-container {
-  position: absolute;
-  top: 30px;
-  right: 0;
-  padding: 1rem;
+.logout-bt {
+  background-color: #f64c4c;
+  margin: 20px;
+  max-height: 40px;
+  min-width: 15px;
+}
+
+.logout-bt:hover{
+  background-color: #ff7979;
+}
+.user-tag {
+  padding: 10px;
+  background-color: #ffc973;
+  border-radius: 41px;
+  padding-top: 20px;
+  padding-bottom: 20px;
+  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+}
+
+.user-score {
+  padding: 10px;
+  background-color: #ffc973;
+  border-radius: 41px;
+  padding-top: 10px;
+  padding-bottom: 20px;
+  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+}
+
+.user-points {
+  padding: 0;
+  margin: 0;
+  font-size: 60px;
+  font-family: Impact, Haettenschweiler, "Arial Narrow Bold", sans-serif;
+  color: white;
+  -webkit-text-stroke: 2px #000000;
+}
+
+.history-bt {
+  background: none;
+  color: black;
+  font-weight: bold;
+  display: block;
+}
+
+.top-wrap {
+  display: inline-flex;
+}
+
+.user-display {
+  
+  color: rgb(43, 43, 43);
+  padding: 0.5rem 1rem;
+  border: solid 5px #FFC973;
+  border-radius: 41px;
+  font-size: 1rem;
+  margin-top: 1rem;
+}
+
+.illustration-bookshelf {
+  padding: 0;
+  margin: 0;
+  width: 30%;
+  height: 30%;
 }
 </style>

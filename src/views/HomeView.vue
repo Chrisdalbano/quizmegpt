@@ -41,7 +41,8 @@
     <p class="error-message">{{ errorMessage }}</p>
     <div v-if="loading" class="loading-spinner"></div>
   </div>
-  <img class="illustration-home" v-if="!quizGenerated" src="../assets/home-vector-design.png" />
+  <img class="illustration-home" v-if="!quizGenerated & !resultsShown" src="../assets/home-vector-design.png" />
+  <img class="illustration-home results-ill" v-if="resultsShown" src="../assets/results-ill.png" />
   <quiz-component
     ref="quizComponent"
     v-if="quizGenerated"
@@ -460,5 +461,11 @@ button:hover {
   margin: 0 auto;
   width: 317px;
   height: 317px;
+}
+
+.results-ill {
+  padding: 0;
+  width: 200px;
+  height: 200px;
 }
 </style>
