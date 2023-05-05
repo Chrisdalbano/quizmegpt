@@ -1,43 +1,52 @@
 <template>
-  <img class="logo-acc" src="../assets/quizmegpt-logo.png" />
-  <div class="container">
-    <div class="form-container">
-      <h2 v-if="isLoginForm">LOG IN</h2>
-      <h2 v-else>SIGN UP</h2>
-      <form @submit.prevent="isLoginForm ? logIn() : signUp()">
-        <div class="form-group">
-          <label for="email">Email:</label>
-          <input type="email" id="email" v-model="email" />
-        </div>
-        <div class="form-group">
-          <label for="password">Password:</label>
-          <input type="password" id="password" v-model="password" />
-        </div>
-        <div class="form-group" v-if="!isLoginForm">
-          <label for="passwordConfirmation">Confirm Password:</label>
-          <input
-            type="password"
-            id="passwordConfirmation"
-            v-model="passwordConfirmation"
-          />
-        </div>
-        <button class="submit-button" type="submit">
-          {{ isLoginForm ? "Log In" : "Create account" }}
+  <div class="background">
+    <div class="ball" style="top: 50px; left: 100px"></div>
+    <div class="ball-b" style="top: 400px; left: 200px"></div>
+    <div class="ball-b" style="top: 540px; left: 700px"></div>
+    <div class="ball-b" style="top: 290px; left: 1100px"></div>
+    <div class="ball" style="top: 750px; left: 900px"></div>
+    <div class="ball-b" style="top: 500px; left: 1400px"></div>
+
+    <img class="logo-acc" src="../assets/quizmegpt-logo.png" />
+    <div class="container">
+      <div class="form-container">
+        <h2 v-if="isLoginForm">LOG IN</h2>
+        <h2 v-else>SIGN UP</h2>
+        <form @submit.prevent="isLoginForm ? logIn() : signUp()">
+          <div class="form-group">
+            <label for="email">Email:</label>
+            <input type="email" id="email" v-model="email" />
+          </div>
+          <div class="form-group">
+            <label for="password">Password:</label>
+            <input type="password" id="password" v-model="password" />
+          </div>
+          <div class="form-group" v-if="!isLoginForm">
+            <label for="passwordConfirmation">Confirm Password:</label>
+            <input
+              type="password"
+              id="passwordConfirmation"
+              v-model="passwordConfirmation"
+            />
+          </div>
+          <button class="submit-button" type="submit">
+            {{ isLoginForm ? "Log In" : "Create account" }}
+          </button>
+        </form>
+        <p v-if="error" class="error">{{ error }}</p>
+        <p v-if="successMessage" class="success">{{ successMessage }}</p>
+        <p v-if="accountCreated" class="account-created">
+          Account successfully created, go to log in to access your account.
+        </p>
+        <button @click="toggleForm" class="toggle-button">
+          {{
+            isLoginForm
+              ? "Don't have an account? Sign Up"
+              : "Already have an account? Log In"
+          }}
         </button>
-      </form>
-      <p v-if="error" class="error">{{ error }}</p>
-      <p v-if="successMessage" class="success">{{ successMessage }}</p>
-      <p v-if="accountCreated" class="account-created">
-        Account successfully created, go to log in to access your account.
-      </p>
-      <button @click="toggleForm" class="toggle-button">
-        {{
-          isLoginForm
-            ? "Don't have an account? Sign Up"
-            : "Already have an account? Log In"
-        }}
-      </button>
-      <div v-if="loading" class="loading">Loading...</div>
+        <div v-if="loading" class="loading">Loading...</div>
+      </div>
     </div>
   </div>
 </template>
@@ -152,7 +161,8 @@ export default {
   padding: 2rem;
   border-radius: 41px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-  font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif
+  font-family: "Trebuchet MS", "Lucida Sans Unicode", "Lucida Grande",
+    "Lucida Sans", Arial, sans-serif;
 }
 
 h2 {
@@ -238,5 +248,39 @@ input:focus {
   height: 79px;
 }
 
+.ball {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 20px;
+  height: 20px;
+  background-color: #30a0e0;
+  opacity: 0.3;
+  border-radius: 50%;
+  animation: float 3s infinite ease-in-out;
+}
 
+.ball-b {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 20px;
+  height: 20px;
+  background-color: #ffc973;
+  opacity: 0.4;
+  border-radius: 50%;
+  animation: float 3s infinite ease-in-out;
+}
+
+@keyframes float {
+  0% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-20px);
+  }
+  100% {
+    transform: translateY(0);
+  }
+}
 </style>

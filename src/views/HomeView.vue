@@ -1,4 +1,12 @@
 <template>
+  <div class="background">
+    <div class="ball" style="top: 50px; left: 100px;"></div>
+    <div class="ball" style="top: 200px; left: 300px;"></div>
+    <div class="ball-b" style="top: 158px; left: 1300px;"></div>
+    <div class="ball-b" style="top: 700px; left: 400px;"></div>
+    <div class="ball" style="top: 1050px; left: 1100px;"></div>
+    <div class="ball" style="top: 458px; left: 1150px;"></div>
+    <div class="ball" style="top: 800px; left: 1400px;"></div>
   <div class="logo-container">
     <img class="logo" src="../assets/quizmegpt-logo.png" />
   </div>
@@ -73,6 +81,7 @@
     :user-answers="userAnswers"
     :xp-earned="xpEarned"
   />
+</div>
 </template>
 
 <script>
@@ -528,5 +537,43 @@ button:hover {
 button:disabled {
   background-color: #a0a0a0;
   cursor: not-allowed;
+}
+
+
+
+.ball {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 20px;
+  height: 20px;
+  background-color: #30a0e0;
+  opacity: 0.3;
+  border-radius: 50%;
+  animation: float 3s infinite ease-in-out;
+}
+
+.ball-b {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 20px;
+  height: 20px;
+  background-color: #ffc973;
+  opacity: 0.4;
+  border-radius: 50%;
+  animation: float 3s infinite ease-in-out;
+}
+
+@keyframes float {
+  0% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-20px);
+  }
+  100% {
+    transform: translateY(0);
+  }
 }
 </style>

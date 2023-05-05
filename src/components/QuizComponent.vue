@@ -117,29 +117,7 @@ export default {
   display: flex;
   align-items: center;
   margin-bottom: 10px;
-}
-
-.option input {
-  margin-right: 5px;
-}
-
-.submit-btn {
-  background-color: #4285f4;
-  color: white;
-  border: none;
-  border-radius: 3px;
-  padding: 10px 20px;
-  font-size: 1rem;
-  cursor: pointer;
-  transition: background-color 0.3s;
-}
-
-.submit-btn:hover {
-  background-color: #2a75c1;
-}
-
-.hidden-radio {
-  display: none;
+  position: relative;
 }
 
 .option {
@@ -179,7 +157,7 @@ export default {
   align-items: center;
   padding: 10px;
   margin: 20px 500px;
-  background-color: #FFE3B3;
+  background-color: #ffe3b3;
   border-radius: 41px;
   padding: 30px;
   box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
@@ -188,5 +166,17 @@ export default {
 .questionNumber {
   margin: 0;
   padding-bottom: 10px;
-  }
+}
+
+.hidden-radio {
+  display: none;
+}
+
+.option input[type="radio"] {
+  position: absolute;
+  opacity: 0;
+  width: 100%;
+  height: 100%;
+  cursor: pointer;
+}
 </style>
