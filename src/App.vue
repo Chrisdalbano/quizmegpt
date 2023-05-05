@@ -1,7 +1,9 @@
 <template>
   <div id="app">
     <NavBar :loggedIn="loggedIn"></NavBar>
-    <router-view @loggedInUserChanged="updateLoggedInState" :loggedInUser="loggedInUser"></router-view>
+    <transition name="page-fade" mode="out-in">
+      <router-view @loggedInUserChanged="updateLoggedInState" :loggedInUser="loggedInUser"></router-view>
+    </transition>
   </div>
 </template>
 
@@ -18,7 +20,7 @@ export default {
     const store = useStore();
     const loggedInUser = computed(() => store.getters.loggedInUser);
     const loggedIn = computed(() => !!store.getters.loggedInUser);
-    
+
     const updateLoggedInState = (user) => {
       store.commit("setLoggedInUser", user);
     };
@@ -31,3 +33,14 @@ export default {
   },
 };
 </script>
+
+<style>
+.page-fade-enter-active,
+.page-fade-leave-active {
+  transition: opacity 0.3s;
+}
+.page-fade-enter,
+.page-fade-leave-to {
+  opacity: 0;
+}
+</style>

@@ -1,4 +1,5 @@
 <template>
+  <img class="logo-acc" src="../assets/quizmegpt-logo.png" />
   <div class="container">
     <div class="form-container">
       <h2 v-if="isLoginForm">Log in</h2>
@@ -145,10 +146,10 @@ export default {
 
 .form-container {
   width: 400px;
-  height: 500px;
-  background-color: white;
+  height: 450px;
+  background-color: #ffc973;
   padding: 2rem;
-  border-radius: 8px;
+  border-radius: 41px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
@@ -167,10 +168,13 @@ label {
 }
 
 input {
-  padding: 0.5rem;
+  padding: 0.7rem;
   font-size: 1rem;
-  border: 1px solid #ccc;
-  border-radius: 4px;
+  background: #ffe3b3;
+  border: 1px solid #ac9773;
+  border-radius: 41px;
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
+  font-size: medium;
 }
 
 .submit-button {
@@ -179,16 +183,16 @@ input {
   font-size: 1rem;
   font-weight: 500;
   padding: 8px 12px;
-  background-color: #007bff;
+  background-color: #30a0e0;
   color: #ffffff;
   border: none;
-  border-radius: 4px;
+  border-radius: 41px;
   cursor: pointer;
   transition: background-color 0.2s ease;
 }
 
 .submit-button:hover {
-  background-color: #0265cf;
+  background-color: #267aaa;
 }
 
 .error {
@@ -198,18 +202,24 @@ input {
 
 .toggle-button {
   background-color: transparent;
-  color: #007bff;
+  color: black;
   font-size: 0.9rem;
   border: none;
   cursor: pointer;
 }
 
 .toggle-button:hover {
-  color: #0063cc;
+  color: #267aaa;
 }
 
 .success {
   color: green;
   font-weight: bold;
+}
+.logo-acc {
+  display: block;
+  margin: auto;
+  width: 70px;
+  height: 79px;
 }
 </style>

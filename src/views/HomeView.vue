@@ -40,6 +40,7 @@
 
     <p class="error-message">{{ errorMessage }}</p>
     <div v-if="loading" class="loading-spinner"></div>
+    <p v-if="loading" class="waiting-text">We are generating a quiz for you</p>
   </div>
   <img class="illustration-home" v-if="!quizGenerated & !resultsShown" src="../assets/home-vector-design.png" />
   <img class="illustration-home results-ill" v-if="resultsShown" src="../assets/results-ill.png" />
@@ -467,5 +468,25 @@ button:hover {
   padding: 0;
   width: 200px;
   height: 200px;
+}
+
+.waiting-text {
+  animation: bounce 1s ease infinite;
+}
+
+@keyframes bounce {
+  0%,
+  20%,
+  50%,
+  80%,
+  100% {
+    transform: translateY(0);
+  }
+  40% {
+    transform: translateY(-10px);
+  }
+  60% {
+    transform: translateY(-5px);
+  }
 }
 </style>

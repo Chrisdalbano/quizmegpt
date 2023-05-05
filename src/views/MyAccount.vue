@@ -1,50 +1,62 @@
 <template>
-  <div class="my-account" v-if="loggedInUser">
-    <div class="top-wrap">
-      <h3 class="user-display">{{ loggedInUser.email }}</h3>
-      <button @click="logOut" class="logout-bt">Log Out</button>
-      
-    </div>
+  <div v-if="!isLoading" class="my-account">
+    <div class="my-account" v-if="loggedInUser">
+      <div class="top-wrap">
+        <h3 class="user-display">{{ loggedInUser.email }}</h3>
+        <button @click="logOut" class="logout-bt">Log Out</button>
+      </div>
 
-    <p class="greeting-msg"></p>
-    <h3 v-if="userTitle" class="user-tag">{{ userTitle }}</h3>
-    <div v-if="userLevel !== null" class="user-score">
-      <p><b>Your Quiz Score is</b></p>
-      <p class="user-points">{{ userXp }} </p>
-    </div>
-    <img class="illustration-bookshelf" v-if="!quizGenerated" src="../assets/bookshelf-ill.png" />
-    <div v-else>
-      <div class="loading-spinner"></div>
-    </div>
-    <div class="quiz-history">
-      <button class="history-bt" @click="toggleQuizHistory">
-        <span v-if="!isQuizHistoryOpen">Past quizzes ↓</span>
-        <span v-else>Past quizzes ↑</span>
-      </button>
-      <div v-if="!isQuizHistoryOpen">
-        <div
-          v-for="(quiz, index) in quizHistoryData"
-          :key="index"
-          class="quiz-history-item"
-        >
-          <div class="quiz-header">
-            <h3>Quiz {{ index + 1 }}</h3>
-            <p>Your score: {{ quiz.score }} / {{ quiz.questions.length }}</p>
+      <p class="greeting-msg"></p>
+      <h3 v-if="userTitle" class="user-tag">{{ userTitle }}</h3>
+      <div v-if="userLevel !== null" class="user-score">
+        <p><b>Your Quiz Score is</b></p>
+        <p class="user-points">{{ userXp }}</p>
+      </div>
+      <img
+        class="illustration-bookshelf"
+        v-if="!quizGenerated"
+        src="../assets/bookshelf-ill.png"
+      />
+      <div v-else>
+        <div class="loading-spinner"></div>
+      </div>
+      <div class="quiz-history">
+        <button class="history-bt" @click="toggleQuizHistory">
+          <span v-if="!isQuizHistoryOpen">Past quizzes ↓</span>
+          <span v-else>Past quizzes ↑</span>
+        </button>
+        <transition name="quiz-history">
+          <div v-if="!isQuizHistoryOpen">
+            <transition-group name="quiz-history-cascade" tag="div">
+              <div
+                v-for="(quiz, index) in quizHistoryData"
+                :key="index"
+                class="quiz-history-item"
+              >
+                <div class="quiz-header">
+                  <h3>Quiz {{ index + 1 }}</h3>
+                  <p>
+                    Your score: {{ quiz.score }} / {{ quiz.questions.length }}
+                  </p>
+                </div>
+                <div class="quiz-questions">
+                  <div
+                    v-for="(question, qIndex) in quiz.questions"
+                    :key="qIndex"
+                    class="question-info"
+                  >
+                    <p>Question {{ question.question }}</p>
+                    <p><strong>Answer:</strong> {{ question.correctAnswer }}</p>
+                  </div>
+                </div>
+              </div>
+            </transition-group>
           </div>
-          <div class="quiz-questions">
-            <div
-              v-for="(question, qIndex) in quiz.questions"
-              :key="qIndex"
-              class="question-info"
-            >
-              <p>Question {{ question.question }}</p>
-              <p><strong>Answer:</strong> {{ question.correctAnswer }}</p>
-            </div>
-          </div>
-        </div>
+        </transition>
       </div>
     </div>
   </div>
+
   <div v-else>
     <div class="loading-spinner"></div>
   </div>
@@ -204,7 +216,7 @@ button {
 }
 
 .quiz-history-item {
-  background-color: #FFE3B3;
+  background-color: #ffe3b3;
   padding: 1rem;
   margin-bottom: 1rem;
   border-radius: 40.09px;
@@ -225,7 +237,7 @@ button {
   min-width: 15px;
 }
 
-.logout-bt:hover{
+.logout-bt:hover {
   background-color: #ff7979;
 }
 .user-tag {
@@ -267,10 +279,9 @@ button {
 }
 
 .user-display {
-  
   color: rgb(43, 43, 43);
   padding: 0.5rem 1rem;
-  border: solid 5px #FFC973;
+  border: solid 5px #ffc973;
   border-radius: 41px;
   font-size: 1rem;
   margin-top: 1rem;
@@ -282,4 +293,37 @@ button {
   width: 30%;
   height: 30%;
 }
+
+.loading-spinner {
+  display: flex;
+  width: 80px;
+  height: 80px;
+  border: 8px solid #f3f3f3;
+  border-radius: 50%;
+  border-top: 8px solid #ffc973;
+  animation: spin 0.7s linear infinite;
+  margin: 300px auto;
+}
+
+.loading-spinner {
+  display: flex;
+  width: 80px;
+  height: 80px;
+  border: 8px solid #f3f3f3;
+  border-radius: 50%;
+  border-top: 8px solid #ffc973;
+  animation: spin 0.7s linear infinite;
+  margin: 300px auto;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+
 </style>

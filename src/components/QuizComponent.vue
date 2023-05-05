@@ -12,15 +12,19 @@
         v-for="(option, optionIndex) in questions[currentQuestionIndex].options"
         :key="optionIndex"
       >
-        <input
-          type="radio"
-          :name="'question' + currentQuestionIndex"
-          :value="option.value"
-          v-model="userAnswers[currentQuestionIndex]"
-        />
-        <label>{{ option.text }}</label>
+        <div class="option">
+          <input
+            type="radio"
+            :name="'question' + currentQuestionIndex"
+            :value="option.value"
+            v-model="userAnswers[currentQuestionIndex]"
+            :id="'option' + optionIndex"
+            class="hidden-radio"
+          />
+          <label :for="'option' + optionIndex" class="option-label">{{ option.text }}</label>
+        </div>
       </div>
-    </div>
+      </div>
     <button
       @click="nextQuestion"
       v-if="currentQuestionIndex < questions.length - 1"
@@ -97,7 +101,7 @@ export default {
 .question-wrapper {
   background-color: #f3f3f3;
   padding: 15px;
-  border-radius: 5px;
+  border-radius: px;
   margin-bottom: 20px;
   width: 100%;
   max-width: 600px;
@@ -109,8 +113,10 @@ export default {
   margin-bottom: 10px;
 }
 
+
 .option input {
   margin-right: 5px;
+  
 }
 
 .submit-btn {
@@ -127,4 +133,39 @@ export default {
 .submit-btn:hover {
   background-color: #2a75c1;
 }
+
+.hidden-radio {
+    display: none;
+  }
+
+  .option {
+    display: flex;
+    align-items: center;
+    justify-content: left;
+    background-color: #FFC973;
+    width: 200px;
+    border-radius: 41px;
+    padding: 10px 20px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+
+  .option:hover {
+    background-color: #FFE3B3;
+  }
+
+  .option label.option-label {
+    cursor: pointer;
+    width: 100%;
+  }
+
+  .hidden-radio:checked + .option-label {
+    background-color: #006BB9;
+    color: white;
+    border-radius: 41px;
+    display: flex;
+    align-items: center;
+    width: 100%;
+    padding: 10px 20px;
+  }
 </style>

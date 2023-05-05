@@ -6,9 +6,11 @@
     <router-link v-if="!loggedIn" to="/login">
       <img class="nav-icon" src="../assets/User-icon.png" alt="Log In" />
     </router-link>
-    <router-link v-if="loggedIn" to="/my-account">
-      <img class="nav-icon" src="../assets/User-icon.png" alt="My Account" />
-    </router-link>
+    <transition name="page-fade" mode="out-in">
+      <router-link v-if="loggedIn" to="/my-account">
+        <img class="nav-icon" src="../assets/User-icon.png" alt="My Account" />
+      </router-link>
+    </transition>
   </nav>
 </template>
 
@@ -28,7 +30,7 @@ nav {
   position: fixed;
   top: 0;
   right: 0px;
-  background-color: #30A0E0;
+  background-color: #30a0e0;
   padding: 0.5rem;
   border-bottom-left-radius: 41px;
   border-bottom-right-radius: 41px;
@@ -44,5 +46,14 @@ nav {
 
 .nav-icon:hover {
   opacity: 0.7;
+}
+
+.page-fade-enter-active,
+.page-fade-leave-active {
+  transition: opacity 0.3s;
+}
+.page-fade-enter,
+.page-fade-leave-to {
+  opacity: 0;
 }
 </style>

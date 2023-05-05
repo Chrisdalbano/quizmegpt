@@ -1,9 +1,11 @@
 <template>
+  <div class="score-container">
+    <p>Your results</p>
+    <p class="total-score">{{ score }}/{{ totalQuestions }}</p>
+    <p>You earned {{ xpEarned }} points</p>
+  </div>
+
   <div class="results-component">
-    <h2>Your Results:</h2>
-    <p>Your score: {{ score }} out of {{ totalQuestions }}</p>
-    <p>Your score: {{ score }} out of {{ totalQuestions }}</p>
-    <p>You earned {{ xpEarned }} points for this quiz!</p>
     <ol>
       <li v-for="(question, index) in questions" :key="index">
         <strong>{{ question.question }}</strong>
@@ -48,6 +50,19 @@ export default {
 </script>
 
 <style scoped>
+.score-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 10px;
+  margin: 20px 40px;
+  background-color: #ffc973;
+  border-radius: 41px;
+  padding-top: 10px;
+  padding-bottom: 20px;
+  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+}
+
 .results-component {
   display: flex;
   flex-direction: column;
@@ -72,7 +87,7 @@ export default {
 }
 
 .results-component li {
-  margin-bottom: 10px;
+  margin-bottom: 3rem;
 }
 
 .results-component strong {
@@ -91,5 +106,13 @@ export default {
 
 .incorrect-answer {
   color: red;
+}
+
+.total-score {
+  margin: 0;
+  font-size: 80px;
+  font-family: Impact, Haettenschweiler, "Arial Narrow Bold", sans-serif;
+  color: white;
+  -webkit-text-stroke: 3px #000000;
 }
 </style>
