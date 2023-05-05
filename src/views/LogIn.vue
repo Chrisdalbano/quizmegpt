@@ -2,8 +2,8 @@
   <img class="logo-acc" src="../assets/quizmegpt-logo.png" />
   <div class="container">
     <div class="form-container">
-      <h2 v-if="isLoginForm">Log in</h2>
-      <h2 v-else>Sign Up</h2>
+      <h2 v-if="isLoginForm">LOG IN</h2>
+      <h2 v-else>SIGN UP</h2>
       <form @submit.prevent="isLoginForm ? logIn() : signUp()">
         <div class="form-group">
           <label for="email">Email:</label>
@@ -141,7 +141,8 @@ export default {
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 100vh;
+  height: 90vh;
+  padding: 0;
 }
 
 .form-container {
@@ -151,10 +152,12 @@ export default {
   padding: 2rem;
   border-radius: 41px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif
 }
 
 h2 {
   margin-bottom: 1.5rem;
+  box-shadow: inset 0 -2px 0 #ffe3b3;
 }
 
 .form-group {
@@ -168,16 +171,21 @@ label {
 }
 
 input {
+  box-shadow: 0 -4px 0 #ffe3b3;
+  border: none;
   padding: 0.7rem;
   font-size: 1rem;
-  background: #ffe3b3;
-  border: 1px solid #ac9773;
   border-radius: 41px;
   font-family: Verdana, Geneva, Tahoma, sans-serif;
   font-size: medium;
 }
 
+input:focus {
+  outline: none;
+}
+
 .submit-button {
+  width: 250px;
   margin-left: 8px;
   margin-bottom: 2px;
   font-size: 1rem;
@@ -189,10 +197,17 @@ input {
   border-radius: 41px;
   cursor: pointer;
   transition: background-color 0.2s ease;
+  box-shadow: inset 0 -2px 0 #267aaa;
 }
 
 .submit-button:hover {
   background-color: #267aaa;
+}
+
+.submit-button:focus {
+  outline: none;
+  transform: scale(0.95);
+  transition: all 0.3s ease-in-out;
 }
 
 .error {
@@ -222,4 +237,6 @@ input {
   width: 70px;
   height: 79px;
 }
+
+
 </style>

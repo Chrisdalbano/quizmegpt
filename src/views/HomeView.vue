@@ -3,7 +3,9 @@
     <img class="logo" src="../assets/quizmegpt-logo.png" />
   </div>
   <div class="container">
-    <h1 class="p-message">Let's create a quiz! What do you want to be tested about?</h1>
+    <h1 class="p-message">
+      Let's create a quiz! What do you want to be tested about?
+    </h1>
     <!-- <p class="instructions">
       To create a quiz, enter a topic in the text box and click the "Generate
       Quiz" button. Please note that the quality of the generated quiz may vary
@@ -13,37 +15,49 @@
     </p> -->
     <div class="input-container">
       <div class="input-wrapper">
-        <input type="text" v-model="quizTopic" class="input-topic" placeholder="Enter a topic" />
-      <div class="selector-container">
-        <select
-          v-model="difficultyLevel"
-          class="difficulty-selector custom-select"
-          :disabled="loading"
-        >
-          <option value="easy">Easy</option>
-          <option value="medium">Medium</option>
-          <option value="hard">Hard</option>
-          <option value="emoji">Emojis</option>
-        </select>
+        <input
+          type="text"
+          v-model="quizTopic"
+          class="input-topic"
+          placeholder="Enter a topic"
+        />
+        <div class="selector-container">
+          <select
+            v-model="difficultyLevel"
+            class="difficulty-selector custom-select"
+            :disabled="loading"
+          >
+            <option value="easy">Easy</option>
+            <option value="medium">Medium</option>
+            <option value="hard">Hard</option>
+            <option value="emoji">Emojis</option>
+          </select>
+        </div>
       </div>
-      
-      </div>
-      
-      
     </div>
     <div class="button-container">
-        <button @click="generateQuiz" :disabled="loading">Generate Quiz</button>
+      <button @click="generateQuiz" :disabled="loading" class="disabledStyle">
+        Generate Quiz
+      </button>
       <button @click="loadSampleQuiz" class="sample-button" :disabled="loading">
         Load Sample Quiz
       </button>
-      </div>
+    </div>
 
     <p class="error-message">{{ errorMessage }}</p>
     <div v-if="loading" class="loading-spinner"></div>
     <p v-if="loading" class="waiting-text">We are generating a quiz for you</p>
   </div>
-  <img class="illustration-home" v-if="!quizGenerated & !resultsShown" src="../assets/home-vector-design.png" />
-  <img class="illustration-home results-ill" v-if="resultsShown" src="../assets/results-ill.png" />
+  <img
+    class="illustration-home"
+    v-if="!quizGenerated & !resultsShown"
+    src="../assets/home-vector-design.png"
+  />
+  <img
+    class="illustration-home results-ill"
+    v-if="resultsShown"
+    src="../assets/results-ill.png"
+  />
   <quiz-component
     ref="quizComponent"
     v-if="quizGenerated"
@@ -146,6 +160,13 @@ export default {
       this.quizQuestions = sampleQuiz;
       this.quizGenerated = true;
       this.resultsShown = false;
+
+      this.$nextTick(() => {
+        window.scrollTo({
+          top: document.body.scrollHeight,
+          behavior: "smooth",
+        });
+      });
     },
     async callApi(prompt) {
       const apiKey = process.env.VUE_APP_CHATGPT_API_KEY;
@@ -184,6 +205,9 @@ export default {
     },
 
     async generateQuiz() {
+      // Hide the results when generating a new quiz
+      this.resultsShown = false;
+
       this.loading = true;
       const response = await this.getQuizFromChatGPT(
         this.quizTopic,
@@ -197,6 +221,12 @@ export default {
           this.quizQuestions = questions;
           this.quizGenerated = true;
           this.errorMessage = ""; // Reset the error message when the quiz is generated successfully
+          this.$nextTick(() => {
+            window.scrollTo({
+              top: document.body.scrollHeight,
+              behavior: "smooth",
+            });
+          });
         } else {
           console.error("Failed to parse questions from API response");
           this.errorMessage =
@@ -215,6 +245,12 @@ export default {
       // Call the Vuex action to update the user's XP
       await this.updateUserXp(payload.xpEarned);
       await this.saveQuizToHistory({ ...payload });
+
+      
+      window.scrollBy({
+        top: window.scrollY - 40,
+        behavior: "smooth",
+      });
     },
     ...mapActions(["updateUserXp", "saveQuizToHistory"]),
     async getQuizFromChatGPT(topic, difficulty) {
@@ -320,7 +356,7 @@ button {
   font-size: 1rem;
   font-weight: 500;
   padding: 8px 12px;
-  background-color: #30A0E0;
+  background-color: #30a0e0;
   color: #ffffff;
   border: none;
   border-radius: 41px;
@@ -329,7 +365,7 @@ button {
 }
 
 .sample-button {
-  background-color: #FFC973;
+  background-color: #ffc973;
 }
 
 button:hover {
@@ -393,12 +429,12 @@ button:hover {
   right: 0;
   width: 100px; /* Adjust this value based on the width of the dropdown */
   padding: 12px;
-  
+
   border-radius: 41px;
   font-size: 1rem;
   background-color: #f9f9f9;
   cursor: pointer;
-  border: 6px solid #FFC973;
+  border: 6px solid #ffc973;
 }
 
 .difficulty-selector:focus {
@@ -428,7 +464,7 @@ button:hover {
   border-radius: 41px;
   font-size: 1rem;
   background-color: #f9f9f9;
-  border: 6px solid #FFE3B3;
+  border: 6px solid #ffe3b3;
 }
 
 .input-topic:focus {
@@ -439,7 +475,6 @@ button:hover {
   -webkit-appearance: none;
   -moz-appearance: none;
   appearance: none;
-  
 }
 
 .custom-select:hover {
@@ -488,5 +523,10 @@ button:hover {
   60% {
     transform: translateY(-5px);
   }
+}
+
+button:disabled {
+  background-color: #a0a0a0;
+  cursor: not-allowed;
 }
 </style>

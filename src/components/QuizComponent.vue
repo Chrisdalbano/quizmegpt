@@ -1,12 +1,13 @@
 <template>
+  <div class="currentQuestion">
+    <p class="questionNumber">Question {{ currentQuestionIndex + 1}} / {{ questions.length }}</p>
+    <b>{{ questions[currentQuestionIndex].question }}</b>
+  </div>
   <div class="quiz-component">
     <div
       class="question-wrapper"
       v-if="currentQuestionIndex < questions.length"
     >
-      <p>
-        <b>{{ questions[currentQuestionIndex].question }}</b>
-      </p>
       <div
         class="choice"
         v-for="(option, optionIndex) in questions[currentQuestionIndex].options"
@@ -21,10 +22,12 @@
             :id="'option' + optionIndex"
             class="hidden-radio"
           />
-          <label :for="'option' + optionIndex" class="option-label">{{ option.text }}</label>
+          <label :for="'option' + optionIndex" class="option-label">{{
+            option.text
+          }}</label>
         </div>
       </div>
-      </div>
+    </div>
     <button
       @click="nextQuestion"
       v-if="currentQuestionIndex < questions.length - 1"
@@ -72,8 +75,11 @@ export default {
       }
       const xpEarned = score * 10; // Modify this value to change XP per correct answer
       // this.saveQuizHistory({ score, xpEarned, questions: this.questions });
-      this.$emit("submit-answers", { score, xpEarned, questions: this.questions });
-      
+      this.$emit("submit-answers", {
+        score,
+        xpEarned,
+        questions: this.questions,
+      });
     },
 
     async saveQuizHistory(quizData) {
@@ -85,7 +91,6 @@ export default {
       };
       await addDoc(quizHistoryRef, newQuizHistory);
     },
-    
   },
 };
 </script>
@@ -96,12 +101,13 @@ export default {
   flex-direction: column;
   align-items: center;
   width: 100%;
+  padding-bottom: 198px;
 }
 
 .question-wrapper {
   background-color: #f3f3f3;
   padding: 15px;
-  border-radius: px;
+  border-radius: 41px;
   margin-bottom: 20px;
   width: 100%;
   max-width: 600px;
@@ -113,10 +119,8 @@ export default {
   margin-bottom: 10px;
 }
 
-
 .option input {
   margin-right: 5px;
-  
 }
 
 .submit-btn {
@@ -135,37 +139,54 @@ export default {
 }
 
 .hidden-radio {
-    display: none;
-  }
+  display: none;
+}
 
-  .option {
-    display: flex;
-    align-items: center;
-    justify-content: left;
-    background-color: #FFC973;
-    width: 200px;
-    border-radius: 41px;
-    padding: 10px 20px;
-    cursor: pointer;
-    transition: background-color 0.3s;
-  }
+.option {
+  display: flex;
+  align-items: center;
+  justify-content: left;
+  background-color: #ffc973;
+  width: 200px;
+  border-radius: 41px;
+  padding: 10px 20px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
 
-  .option:hover {
-    background-color: #FFE3B3;
-  }
+.option:hover {
+  background-color: #ffe3b3;
+}
 
-  .option label.option-label {
-    cursor: pointer;
-    width: 100%;
-  }
+.option label.option-label {
+  cursor: pointer;
+  width: 100%;
+}
 
-  .hidden-radio:checked + .option-label {
-    background-color: #006BB9;
-    color: white;
-    border-radius: 41px;
-    display: flex;
-    align-items: center;
-    width: 100%;
-    padding: 10px 20px;
+.hidden-radio:checked + .option-label {
+  background-color: #006bb9;
+  color: white;
+  border-radius: 41px;
+  display: flex;
+  align-items: center;
+  width: 100%;
+  padding: 10px 20px;
+}
+
+.currentQuestion {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 10px;
+  margin: 20px 500px;
+  background-color: #FFE3B3;
+  border-radius: 41px;
+  padding: 30px;
+  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+}
+
+.questionNumber {
+  margin: 0;
+  padding-bottom: 10px;
   }
 </style>

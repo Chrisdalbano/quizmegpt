@@ -1,13 +1,13 @@
 <template>
   <nav>
-    <router-link to="/">
+    <router-link to="/" exact :class="{ active: $route.path === '/' }">
       <img class="nav-icon" src="../assets/quizme-icon.png" alt="Quiz Me!" />
     </router-link>
-    <router-link v-if="!loggedIn" to="/login">
+    <router-link v-if="!loggedIn" to="/login" exact :class="{ active: $route.path === '/login' }">
       <img class="nav-icon" src="../assets/User-icon.png" alt="Log In" />
     </router-link>
-    <transition name="page-fade" mode="out-in">
-      <router-link v-if="loggedIn" to="/my-account">
+    <transition name="slide">
+      <router-link v-if="loggedIn" to="/my-account" exact :class="{ active: $route.path === '/my-account' }">
         <img class="nav-icon" src="../assets/User-icon.png" alt="My Account" />
       </router-link>
     </transition>
@@ -48,12 +48,16 @@ nav {
   opacity: 0.7;
 }
 
-.page-fade-enter-active,
-.page-fade-leave-active {
-  transition: opacity 0.3s;
+.active {
+  background-color: #006BB9;
+  color: white;
+  border-radius: 41px;
+  
+  transform: scale(0.85);
+  transition: all 0.3s ease-in-out;
 }
-.page-fade-enter,
-.page-fade-leave-to {
-  opacity: 0;
-}
+
+
+
+
 </style>
