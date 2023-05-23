@@ -55,11 +55,11 @@ export default {
   flex-direction: column;
   align-items: center;
   padding: 10px;
-  margin: 20px 40px;
+  margin: 2rem auto;
+  width: 20rem;
   background-color: #ffc973;
   border-radius: 41px;
-  padding-top: 10px;
-  padding-bottom: 20px;
+
   box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
 }
 

@@ -3,9 +3,12 @@
     <router-link to="/" exact :class="{ active: $route.path === '/' }">
       <img class="nav-icon" src="../assets/quizme-icon.png" alt="Quiz Me!" />
     </router-link>
-    <router-link v-if="!loggedIn" to="/login" exact :class="{ active: $route.path === '/login' }">
-      <img class="nav-icon" src="../assets/User-icon.png" alt="Log In" />
-    </router-link>
+    <div v-if="!loggedIn" class="login-overlay">
+      <router-link to="/login" exact :class="{ active: $route.path === '/login' }">
+        <img class="nav-icon" src="../assets/User-icon.png" alt="Log In" />
+      </router-link>
+      <div class="glow-effect"></div>
+    </div>
     <transition name="slide">
       <router-link v-if="loggedIn" to="/my-account" exact :class="{ active: $route.path === '/my-account' }">
         <img class="nav-icon" src="../assets/User-icon.png" alt="My Account" />
@@ -57,7 +60,33 @@ nav {
   transition: all 0.3s ease-in-out;
 }
 
+.login-overlay {
+  position: relative;
+  display: inline-block;
+}
 
+.glow-effect {
+  position: absolute;
+  top: 4px;
+  left: 0;
+  width: 100%;
+  height: 80%;
+  border-radius: 50%;
+  background-color: rgba(255, 238, 85, 0.8);
+  animation: glowing 2s infinite;
+  pointer-events: none;
+  opacity: 30%;
+}
 
-
+@keyframes glowing {
+  0% {
+    box-shadow: 0 0 5px rgba(255, 255, 255, 0.8);
+  }
+  50% {
+    box-shadow: 0 0 20px rgba(255, 255, 255, 0.8), 0 0 30px rgba(255, 255, 255, 0.8);
+  }
+  100% {
+    box-shadow: 0 0 5px rgba(255, 255, 255, 0.8);
+  }
+}
 </style>

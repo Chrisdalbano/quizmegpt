@@ -7,6 +7,7 @@
       </div>
 
       <p class="greeting-msg"></p>
+      
       <h3 v-if="userTitle" class="user-tag">{{ userTitle }}</h3>
       <div v-if="userLevel !== null" class="user-score">
         <p><b>Your Quiz Score is</b></p>

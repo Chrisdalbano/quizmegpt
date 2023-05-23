@@ -1,91 +1,105 @@
 <template>
   <div class="background">
-    <div class="ball" style="top: 50px; left: 100px;"></div>
-    <div class="ball" style="top: 200px; left: 300px;"></div>
-    <div class="ball-b" style="top: 158px; left: 1300px;"></div>
-    <div class="ball-b" style="top: 700px; left: 400px;"></div>
-    <div class="ball" style="top: 1050px; left: 1100px;"></div>
-    <div class="ball" style="top: 458px; left: 1150px;"></div>
-    <div class="ball" style="top: 800px; left: 1400px;"></div>
-  <div class="logo-container">
-    <img class="logo" src="../assets/quizmegpt-logo.png" />
-  </div>
-  <div class="container">
-    <h1 class="p-message">
-      Let's create a quiz! What do you want to be tested about?
-    </h1>
-    <!-- <p class="instructions">
-      To create a quiz, enter a topic in the text box and click the "Generate
-      Quiz" button. Please note that the quality of the generated quiz may vary
-      depending on the complexity of the topic and the clarity of the provided
-      input. For No-API testing, click the "Load Sample Quiz" button to load a
-      predefined sample quiz. Enjoy testing your knowledge!
-    </p> -->
-    <div class="input-container">
-      <div class="input-wrapper">
-        <input
-          type="text"
-          v-model="quizTopic"
-          class="input-topic"
-          placeholder="Enter a topic"
-        />
-        <div class="selector-container">
-          <select
-            v-model="difficultyLevel"
-            class="difficulty-selector custom-select"
-            :disabled="loading"
-          >
-            <option value="easy">Easy</option>
-            <option value="medium">Medium</option>
-            <option value="hard">Hard</option>
-            <option value="emoji">Emojis</option>
-          </select>
+    <div class="ball" style="top: 50px; left: 100px"></div>
+    <div class="ball" style="top: 200px; left: 300px"></div>
+    <div class="ball-b" style="top: 158px; left: 1300px"></div>
+    <div class="ball-b" style="top: 700px; left: 400px"></div>
+    <div class="ball" style="top: 1050px; left: 1100px"></div>
+    <div class="ball" style="top: 458px; left: 1150px"></div>
+    <div class="ball" style="top: 800px; left: 1400px"></div>
+    <div class="logo-container">
+      <img class="logo" src="../assets/quizmegpt-logo.png" />
+    </div>
+    <div class="container">
+      <div v-if="loggedInUser">
+        <h1 class="p-message">
+          Welcome back {{ shortenedEmail }}! What do you want to be tested
+          about?
+        </h1>
+      </div>
+
+      <div v-else>
+        <h1 class="p-message">
+          Let's create a quiz! What do you want to be tested about?
+        </h1>
+        <p class="nlg-paragraph">
+          Log into your account to save your Quiz History and get XP from your
+          matches!
+        </p>
+        <!-- Display login or signup form -->
+      </div>
+
+      <div class="input-container">
+        <div class="input-wrapper">
+          <input
+            type="text"
+            v-model="quizTopic"
+            class="input-topic"
+            placeholder="Enter a topic"
+          />
+          <div class="selector-container">
+            <select
+              v-model="difficultyLevel"
+              class="difficulty-selector custom-select"
+              :disabled="loading"
+            >
+              <option value="easy">Easy</option>
+              <option value="medium">Medium</option>
+              <option value="hard">Hard</option>
+              <option value="emoji">Emojis</option>
+            </select>
+          </div>
         </div>
       </div>
-    </div>
-    <div class="button-container">
-      <button @click="generateQuiz" :disabled="loading" class="disabledStyle">
-        Generate Quiz
-      </button>
-      <button @click="loadSampleQuiz" class="sample-button" :disabled="loading">
-        Load Sample Quiz
-      </button>
-    </div>
+      <div class="button-container">
+        <button @click="generateQuiz" :disabled="loading" class="disabledStyle">
+          Generate Quiz
+        </button>
+        <button
+          @click="loadSampleQuiz"
+          class="sample-button"
+          :disabled="loading"
+        >
+          Load Sample Quiz
+        </button>
+      </div>
 
-    <p class="error-message">{{ errorMessage }}</p>
-    <div v-if="loading" class="loading-spinner"></div>
-    <p v-if="loading" class="waiting-text">We are generating a quiz for you</p>
+      <p class="error-message">{{ errorMessage }}</p>
+      <div v-if="loading" class="loading-spinner"></div>
+      <p v-if="loading" class="waiting-text">
+        We are generating a quiz for you
+      </p>
+    </div>
+    <img
+      class="illustration-home"
+      v-if="!quizGenerated & !resultsShown"
+      src="../assets/home-vector-design.png"
+    />
+    <img
+      class="illustration-home results-ill"
+      v-if="resultsShown"
+      src="../assets/results-ill.png"
+    />
+    <quiz-component
+      ref="quizComponent"
+      v-if="quizGenerated"
+      :questions="quizQuestions"
+      @submit-answers="showResults"
+    ></quiz-component>
+
+    <results-component
+      v-if="resultsShown"
+      :score="score"
+      :total-questions="quizQuestions.length"
+      :questions="quizQuestions"
+      :user-answers="userAnswers"
+      :xp-earned="xpEarned"
+    />
   </div>
-  <img
-    class="illustration-home"
-    v-if="!quizGenerated & !resultsShown"
-    src="../assets/home-vector-design.png"
-  />
-  <img
-    class="illustration-home results-ill"
-    v-if="resultsShown"
-    src="../assets/results-ill.png"
-  />
-  <quiz-component
-    ref="quizComponent"
-    v-if="quizGenerated"
-    :questions="quizQuestions"
-    @submit-answers="showResults"
-  ></quiz-component>
-
-  <results-component
-    v-if="resultsShown"
-    :score="score"
-    :total-questions="quizQuestions.length"
-    :questions="quizQuestions"
-    :user-answers="userAnswers"
-    :xp-earned="xpEarned"
-  />
-</div>
 </template>
 
 <script>
-import { mapActions } from "vuex";
+import { mapActions, mapGetters } from "vuex";
 import axios from "axios";
 import QuizComponent from "@/components/QuizComponent.vue";
 import ResultsComponent from "@/components/ResultsComponent.vue";
@@ -143,6 +157,7 @@ export default {
     QuizComponent,
     ResultsComponent,
   },
+
   data() {
     return {
       difficultyLevel: "easy",
@@ -158,6 +173,27 @@ export default {
     };
   },
 
+  computed: {
+    ...mapGetters(["loggedInUser"]),
+    shortenedEmail() {
+      if (this.loggedInUser && this.loggedInUser.email) {
+        const emailParts = this.loggedInUser.email.split("@");
+        if (emailParts.length === 2) {
+          const username = emailParts[0];
+
+          const maxUsernameLength = 8; // Define the maximum length for the username
+
+          if (username.length > maxUsernameLength) {
+            // Shorten the username and add ellipsis
+            const shortenedUsername = username.slice(0, maxUsernameLength);
+            return shortenedUsername + "...";
+          }
+        }
+      }
+
+      return this.loggedInUser ? this.loggedInUser.email : "";
+    },
+  },
   watch: {
     quizQuestions(newVal) {
       console.log("quizQuestions updated:", newVal);
@@ -255,7 +291,6 @@ export default {
       await this.updateUserXp(payload.xpEarned);
       await this.saveQuizToHistory({ ...payload });
 
-      
       window.scrollBy({
         top: window.scrollY - 40,
         behavior: "smooth",
@@ -381,41 +416,6 @@ button:hover {
   background-color: #4e4e4e;
 }
 
-@media (max-width: 480px) {
-  .input-container {
-    flex-direction: column;
-  }
-
-  input[type="text"] {
-    margin-bottom: 8px;
-    margin-right: 0;
-  }
-}
-
-.loading-spinner {
-  width: 40px;
-  height: 40px;
-  margin: 0 auto;
-  border: 4px solid #f3f3f3;
-  border-top: 4px solid #007bff;
-  border-radius: 50%;
-  animation: spin 0.6s linear infinite;
-}
-
-@keyframes spin {
-  0% {
-    transform: rotate(0deg);
-  }
-  100% {
-    transform: rotate(360deg);
-  }
-}
-
-.error-message {
-  color: red;
-  margin-top: 10px;
-}
-
 .instructions {
   display: inline-block;
   background-color: #e7e7e7;
@@ -496,6 +496,17 @@ button:hover {
   margin-top: 1rem;
 }
 
+.nlg-paragraph {
+  display: flex;
+  justify-content: center;
+  justify-items: center;
+  margin: auto;
+  font-size: medium;
+  max-width: 50%;
+  padding-bottom: 1rem;
+  opacity: 75%;
+}
+
 .button-container button {
   margin-left: 8px;
   margin-right: 8px;
@@ -539,8 +550,6 @@ button:disabled {
   cursor: not-allowed;
 }
 
-
-
 .ball {
   position: absolute;
   top: 0;
@@ -574,6 +583,42 @@ button:disabled {
   }
   100% {
     transform: translateY(0);
+  }
+}
+
+/* Responsive Styles */
+
+.background {
+  overflow-x: hidden;
+  overflow-y: auto;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+@media (max-width: 600px) {
+  .background {
+    align-items: center;
+    justify-content: center;
+  }
+
+  .container {
+    padding: 20px;
+  }
+
+  .logo {
+    width: 100px;
+    height: 107px;
+  }
+
+  .illustration-home {
+    width: 200px;
+    height: 200px;
+  }
+
+  .results-ill {
+    width: 120px;
+    height: 120px;
   }
 }
 </style>

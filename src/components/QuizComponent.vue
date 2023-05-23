@@ -1,6 +1,6 @@
 <template>
+  <p class="questionNumber">Question {{ currentQuestionIndex + 1}} / {{ questions.length }}</p>
   <div class="currentQuestion">
-    <p class="questionNumber">Question {{ currentQuestionIndex + 1}} / {{ questions.length }}</p>
     <b>{{ questions[currentQuestionIndex].question }}</b>
   </div>
   <div class="quiz-component">
@@ -156,7 +156,7 @@ export default {
   flex-direction: column;
   align-items: center;
   padding: 10px;
-  margin: 20px 500px;
+  margin: 20px auto;
   background-color: #ffe3b3;
   border-radius: 41px;
   padding: 30px;
@@ -164,7 +164,11 @@ export default {
 }
 
 .questionNumber {
-  margin: 0;
+  font-size: 1rem;
+  opacity: 60%;
+  display: flex;
+  align-content: center;
+  margin: auto;
   padding-bottom: 10px;
 }
 
@@ -178,5 +182,13 @@ export default {
   width: 100%;
   height: 100%;
   cursor: pointer;
+}
+
+/* Responsive Styles */
+
+@media (max-width: 600px) {
+  .currentQuestion {
+    margin: 20px;
+  }
 }
 </style>
