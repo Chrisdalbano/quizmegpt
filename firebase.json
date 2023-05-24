@@ -1,6 +1,6 @@
 {
   "functions": {
-    "source": "src",
+    "source": "quiz-app",
     "ignore": [
       "node_modules",
       ".git",
