@@ -43,4 +43,6 @@ export default {
 .page-fade-leave-to {
   opacity: 0;
 }
+
+
 </style>

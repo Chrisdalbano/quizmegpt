@@ -326,5 +326,19 @@ button {
   }
 }
 
+@media only screen and (max-width: 600px) {
+  .logout-bt {
+    min-width: 60px;
+    font-size: 0.8rem;
+    padding: 0.4rem 0.8rem;
+  }
+}
 
+@media only screen and (max-width: 400px) {
+  .logout-bt {
+    min-width: 50px;
+    font-size: 0.6rem;
+    padding: 0.3rem 0.6rem;
+  }
+}
 </style>

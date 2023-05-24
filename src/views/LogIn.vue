@@ -1,11 +1,12 @@
 <template>
   <div class="background">
-    <div class="ball" style="top: 50px; left: 100px"></div>
-    <div class="ball-b" style="top: 400px; left: 200px"></div>
-    <div class="ball-b" style="top: 540px; left: 700px"></div>
-    <div class="ball-b" style="top: 290px; left: 1100px"></div>
-    <div class="ball" style="top: 750px; left: 900px"></div>
-    <div class="ball-b" style="top: 500px; left: 1400px"></div>
+    <div class="ball" style="top: 5vh; left: 10vw"></div>
+    <div class="ball" style="top: 20vh; left: 30vw"></div>
+    <div class="ball-b" style="top: 15.8vh; left: 70vw"></div>
+    <div class="ball-b" style="top: 70vh; left: 40vw"></div>
+    <div class="ball" style="top: 95vh; left: 80vw"></div>
+    <div class="ball" style="top: 45.8vh; left: 90vw"></div>
+    <div class="ball" style="top: 80vh; left: 60vw"></div>
 
     <img class="logo-acc" src="../assets/quizmegpt-logo.png" />
     <div class="container">
@@ -250,8 +251,6 @@ input:focus {
 
 .ball {
   position: absolute;
-  top: 0;
-  left: 0;
   width: 20px;
   height: 20px;
   background-color: #30a0e0;
@@ -262,8 +261,6 @@ input:focus {
 
 .ball-b {
   position: absolute;
-  top: 0;
-  left: 0;
   width: 20px;
   height: 20px;
   background-color: #ffc973;

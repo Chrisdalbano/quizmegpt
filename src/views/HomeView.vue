@@ -1,12 +1,12 @@
 <template>
   <div class="background">
-    <div class="ball" style="top: 50px; left: 100px"></div>
-    <div class="ball" style="top: 200px; left: 300px"></div>
-    <div class="ball-b" style="top: 158px; left: 1300px"></div>
-    <div class="ball-b" style="top: 700px; left: 400px"></div>
-    <div class="ball" style="top: 1050px; left: 1100px"></div>
-    <div class="ball" style="top: 458px; left: 1150px"></div>
-    <div class="ball" style="top: 800px; left: 1400px"></div>
+    <div class="ball" style="top: 5vh; left: 10vw"></div>
+    <div class="ball" style="top: 20vh; left: 30vw"></div>
+    <div class="ball-b" style="top: 15.8vh; left: 70vw"></div>
+    <div class="ball-b" style="top: 70vh; left: 40vw"></div>
+    <div class="ball" style="top: 95vh; left: 80vw"></div>
+    <div class="ball" style="top: 45.8vh; left: 90vw"></div>
+    <div class="ball" style="top: 80vh; left: 60vw"></div>
     <div class="logo-container">
       <img class="logo" src="../assets/quizmegpt-logo.png" />
     </div>
@@ -23,7 +23,7 @@
           Let's create a quiz! What do you want to be tested about?
         </h1>
         <p class="nlg-paragraph">
-          Log into your account to save your Quiz History and get XP from your
+          Log into your account to review your Quizzes and get points from your
           matches!
         </p>
         <!-- Display login or signup form -->
@@ -199,7 +199,21 @@ export default {
       console.log("quizQuestions updated:", newVal);
     },
   },
-
+  beforeRouteLeave(to, from, next) {
+    if (this.quizGenerated) {
+      if (
+        confirm(
+          "You're in the middle of a quiz, are you sure you want to leave this page?"
+        )
+      ) {
+        next();
+      } else {
+        next(false);
+      }
+    } else {
+      next();
+    }
+  },
   methods: {
     loadSampleQuiz() {
       this.quizQuestions = sampleQuiz;
@@ -383,7 +397,7 @@ h1 {
 }
 
 input[type="text"] {
-  padding-right: 100px; /* Adjust this value based on the width of the dropdown */
+  padding-right: 100px;
   box-sizing: border-box;
   width: 100%;
 }
@@ -436,7 +450,7 @@ button:hover {
   position: absolute;
   top: 0;
   right: 0;
-  width: 100px; /* Adjust this value based on the width of the dropdown */
+  width: 100px;
   padding: 12px;
 
   border-radius: 41px;
@@ -552,8 +566,6 @@ button:disabled {
 
 .ball {
   position: absolute;
-  top: 0;
-  left: 0;
   width: 20px;
   height: 20px;
   background-color: #30a0e0;
@@ -564,8 +576,6 @@ button:disabled {
 
 .ball-b {
   position: absolute;
-  top: 0;
-  left: 0;
   width: 20px;
   height: 20px;
   background-color: #ffc973;
@@ -591,7 +601,6 @@ button:disabled {
 .background {
   overflow-x: hidden;
   overflow-y: auto;
-  height: 100vh;
   display: flex;
   flex-direction: column;
 }

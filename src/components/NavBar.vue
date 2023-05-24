@@ -4,7 +4,7 @@
       <img class="nav-icon" src="../assets/quizme-icon.png" alt="Quiz Me!" />
     </router-link>
     <div v-if="!loggedIn" class="login-overlay">
-      <router-link to="/login" exact :class="{ active: $route.path === '/login' }">
+      <router-link to="/login" exact :class="{ activeLogin : $route.path === '/login' }">
         <img class="nav-icon" src="../assets/User-icon.png" alt="Log In" />
       </router-link>
       <div class="glow-effect"></div>
@@ -60,6 +60,7 @@ nav {
   transition: all 0.3s ease-in-out;
 }
 
+
 .login-overlay {
   position: relative;
   display: inline-block;
@@ -72,10 +73,10 @@ nav {
   width: 100%;
   height: 80%;
   border-radius: 50%;
-  background-color: rgba(255, 238, 85, 0.8);
+  background-color: rgba(142, 255, 13, 0.8);
   animation: glowing 2s infinite;
   pointer-events: none;
-  opacity: 30%;
+  opacity: 40%;
 }
 
 @keyframes glowing {

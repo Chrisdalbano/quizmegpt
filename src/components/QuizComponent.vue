@@ -1,5 +1,7 @@
 <template>
-  <p class="questionNumber">Question {{ currentQuestionIndex + 1}} / {{ questions.length }}</p>
+  <p class="questionNumber">
+    Question {{ currentQuestionIndex + 1 }} / {{ questions.length }}
+  </p>
   <div class="currentQuestion">
     <b>{{ questions[currentQuestionIndex].question }}</b>
   </div>
@@ -13,15 +15,13 @@
         v-for="(option, optionIndex) in questions[currentQuestionIndex].options"
         :key="optionIndex"
       >
-        <div class="option">
-          <input
-            type="radio"
-            :name="'question' + currentQuestionIndex"
-            :value="option.value"
-            v-model="userAnswers[currentQuestionIndex]"
-            :id="'option' + optionIndex"
-            class="hidden-radio"
-          />
+        <div
+          class="option"
+          :class="{
+            selected: userAnswers[currentQuestionIndex] === option.value,
+          }"
+          @click="selectAnswer(option.value)"
+        >
           <label :for="'option' + optionIndex" class="option-label">{{
             option.text
           }}</label>
@@ -61,6 +61,9 @@ export default {
     };
   },
   methods: {
+    selectAnswer(answer) {
+      this.userAnswers[this.currentQuestionIndex] = answer;
+    },
     nextQuestion() {
       if (this.userAnswers[this.currentQuestionIndex] !== null) {
         this.currentQuestionIndex++;
@@ -101,7 +104,7 @@ export default {
   flex-direction: column;
   align-items: center;
   width: 100%;
-  padding-bottom: 198px;
+  padding-bottom: 150px;
 }
 
 .question-wrapper {
@@ -130,6 +133,11 @@ export default {
   padding: 10px 20px;
   cursor: pointer;
   transition: background-color 0.3s;
+}
+
+.selected {
+  background-color: #006bb9;
+  color: white;
 }
 
 .option:hover {
