@@ -10,6 +10,71 @@
     <div class="logo-container">
       <img class="logo" src="../assets/quizmegpt-logo.png" />
     </div>
+    <button class="info-button" @click="showModal = true">?</button>
+    <div v-if="showModal" class="modal">
+      <div class="modal-content">
+        <span class="close-button" @click="showModal = false">&times;</span>
+        <h2>Welcome to QuizMEGPT!</h2>
+        <p>
+          QuizMEGPT is an interactive web application that generates quizzes for
+          you based on the topic of your choice. It utilizes the power of
+          OpenAI's advanced language model, chat-gpt-turbo, to process your
+          requests and provide insightful, challenging, and fun quizzes in
+          return.
+        </p>
+        <h3>Here's how it works:</h3>
+        <ol>
+          <li>
+            <strong>Choose Your Topic</strong>: Just enter a topic you're
+            interested in, and QuizMEGPT will use it to create a quiz. The more
+            specific you are with your topic, the more targeted the quiz will
+            be.
+          </li>
+          <li>
+            <strong>Select Difficulty Level</strong>: You can choose the
+            difficulty level of your quiz from easy, medium, hard, to emojis.
+            The higher the level, the more challenging the questions! And let's
+            not talk about the emojies difficulty...
+          </li>
+          <li>
+            <strong>Quiz Generation</strong>: After you've chosen a topic and
+            difficulty, click on 'Generate Quiz'. The application will then send
+            a request to the OpenAI API. The API's response will be processed
+            and formatted through specific algorithms to generate a unique and
+            engaging quiz for you.
+          </li>
+          <li>
+            <strong>Account Benefits</strong>: If you have an account and are
+            logged in, you can track your progress, review past quizzes, and
+            even earn points from your quiz results! As you accumulate points,
+            you'll level up and unlock new titles, adding an exciting
+            competitive edge to your quizzing journey.
+          </li>
+          <li>
+            <strong>Load Sample Quiz</strong>: Not sure what topic to choose?
+            Try out the 'Load Sample Quiz' feature! This gives you a pre-made
+            quiz to explore.
+          </li>
+        </ol>
+        <p>
+          QuizMEGPT aims to make learning fun and engaging, allowing you to test
+          your knowledge and learn new information across a wide array of
+          topics. Enjoy the quiz experience!
+        </p>
+        <p class="note">
+          <strong>Note</strong>: While ChatGPT strives to provide accurate
+          information, there might be instances where the generated content may
+          be incorrect or out-of-date. We're constantly working on improving the
+          accuracy of the system. However, it's important to remember that the
+          underlying model was last trained on new data in September 2021, and
+          thus it doesn't have information about the world after that point. We
+          encourage users to use QuizMEGPT as a fun learning tool rather than a
+          primary source of information and to verify any important data from
+          other reliable resources. Thank you for your understanding and enjoy
+          the quizzes!
+        </p>
+      </div>
+    </div>
     <div class="container">
       <div v-if="loggedInUser">
         <h1 class="p-message">
@@ -157,9 +222,16 @@ export default {
     QuizComponent,
     ResultsComponent,
   },
-
+  mounted() {
+    window.addEventListener("click", (event) => {
+      if (event.target.classList.contains("modal")) {
+        this.showModal = false;
+      }
+    });
+  },
   data() {
     return {
+      showModal: false,
       difficultyLevel: "easy",
       quizTopic: "",
       quizGenerated: false,
@@ -651,7 +723,7 @@ button:disabled {
   .input-topic {
     font-size: 1.2rem;
   }
-  
+
   .difficulty-selector {
     font-size: 1.2rem;
   }
@@ -659,10 +731,59 @@ button:disabled {
   .nlg-paragraph {
     font-size: large;
   }
-  
+
   input[type="text"] {
     padding-right: 100px;
     font-size: 1.2rem;
   }
 }
+
+.info-button {
+  display: flex;
+  margin: auto;
+  justify-content: center;
+  background-color: #616161;
+  color: white;
+  border-radius: 100%;
+}
+
+.modal {
+  position: fixed;
+  z-index: 1;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgba(0, 0, 0, 0.4);
+}
+
+.modal-content {
+  background-color: #fefefe;
+  margin: 15% auto;
+  padding: 20px;
+  border: 1px solid #888;
+  width: 80%;
+  border-radius: 41px;
+}
+
+.close-button {
+  color: #30a0e0;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+}
+
+.close-button:hover,
+.close-button:focus {
+  color: #000;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.note{
+  opacity:60%;
+  color: rgb(85, 0, 0);
+}
+
 </style>
