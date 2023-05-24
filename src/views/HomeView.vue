@@ -630,4 +630,39 @@ button:disabled {
     height: 120px;
   }
 }
+@media only screen and (max-width: 600px) {
+  body {
+    font-size: 22px;
+  }
+
+  h1 {
+    font-size: 2.5rem;
+  }
+
+  button {
+    font-size: 1.2rem;
+    padding: 10px 16px;
+  }
+
+  .p-message {
+    font-size: 1.5rem;
+  }
+
+  .input-topic {
+    font-size: 1.2rem;
+  }
+  
+  .difficulty-selector {
+    font-size: 1.2rem;
+  }
+
+  .nlg-paragraph {
+    font-size: large;
+  }
+  
+  input[type="text"] {
+    padding-right: 100px;
+    font-size: 1.2rem;
+  }
+}
 </style>

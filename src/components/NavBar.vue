@@ -90,4 +90,14 @@ nav {
     box-shadow: 0 0 5px rgba(255, 255, 255, 0.8);
   }
 }
+
+@media only screen and (max-width: 600px) {
+  .nav {
+    padding: 1rem;
+  }
+  .nav-icon {
+    width: 50px;
+    height: 50px;
+  }
+}
 </style>
