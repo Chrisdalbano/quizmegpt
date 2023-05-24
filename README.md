@@ -1,24 +1,8 @@
-# quizmegpt
 
-## Project setup
-```
-npm install
-```
+![alt text](src/assets/quizmegpt-logo.png)
 
-### Compiles and hot-reloads for development
-```
-npm run serve
-```
+# A Quiz App based on chat-gpt API 
+Mainly written in Vue.js and Firebase for backend, hosted in Firebase.
 
-### Compiles and minifies for production
-```
-npm run build
-```
 
-### Lints and fixes files
-```
-npm run lint
-```
-
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+[Click here to go to the live website](https://quizmegpt-fb.firebaseapp.com)
