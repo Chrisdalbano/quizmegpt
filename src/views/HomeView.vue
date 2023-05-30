@@ -161,6 +161,7 @@
       :xp-earned="xpEarned"
     />
   </div>
+  
 </template>
 
 <script>
@@ -712,12 +713,12 @@ button:disabled {
   }
 
   button {
-    font-size: 1.2rem;
+    font-size: 1rem;
     padding: 10px 16px;
   }
 
   .p-message {
-    font-size: 1.5rem;
+    font-size: 1rem;
   }
 
   .input-topic {
@@ -735,6 +736,10 @@ button:disabled {
   input[type="text"] {
     padding-right: 100px;
     font-size: 1.2rem;
+  }
+
+  .modal-content {
+    font-size: 0.8rem;
   }
 }
 
@@ -781,9 +786,10 @@ button:disabled {
   cursor: pointer;
 }
 
-.note{
-  opacity:60%;
+.note {
+  opacity: 60%;
   color: rgb(85, 0, 0);
 }
+
 
 </style>

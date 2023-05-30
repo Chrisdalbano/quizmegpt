@@ -278,6 +278,27 @@ button {
 .top-wrap {
   display: inline-flex;
 }
+.top-wrap {
+    display: flex;
+    justify-content: space-between; /* This will keep the items at the opposite ends of the container */
+    align-items: center;
+  }
+
+  .user-display, .logout-bt {
+    /* The flex property is a shorthand property for flex-grow, flex-shrink, and flex-basis */
+    flex: 1 0 auto;
+  }
+
+  /* Media query */
+  @media screen and (max-width: 600px) {
+    .top-wrap {
+      flex-direction: column;
+    }
+
+    .user-display, .logout-bt {
+      flex: none;
+    }
+  }
 
 .user-display {
   color: rgb(43, 43, 43);
@@ -329,7 +350,7 @@ button {
 @media only screen and (max-width: 600px) {
   .logout-bt {
     min-width: 60px;
-    font-size: 0.8rem;
+    font-size: 1rem;
     padding: 0.4rem 0.8rem;
   }
 }
