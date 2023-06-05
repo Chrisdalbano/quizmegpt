@@ -5,7 +5,7 @@
     <p>You earned {{ xpEarned }} points</p>
   </div>
 
-  <div class="results-component">
+  <div class="results-component" ref="results">
     <ol>
       <li v-for="(question, index) in questions" :key="index">
         <strong>{{ question.question }}</strong>
@@ -23,9 +23,16 @@
       </li>
     </ol>
   </div>
+  <div class="download-bt-wrapper">
+    <button @click="downloadPDF" class="download-bt">Download Results</button>
+  </div>
+  
 </template>
 
 <script>
+import html2canvas from "html2canvas";
+import jsPDF from "jspdf";
+
 export default {
   name: "ResultsComponent",
   props: {
@@ -44,6 +51,27 @@ export default {
     },
     isAnswerCorrect(question, userAnswer) {
       return userAnswer === question.correctAnswer;
+    },
+
+    async downloadPDF() {
+      const element = this.$refs.results; // reference to the quiz results div
+      console.log(element);
+
+      const canvas = await html2canvas(element);
+      console.log(canvas);
+
+      const imgData = canvas.toDataURL("image/png");
+      console.log(imgData);
+
+      let pdf = new jsPDF("p", "mm", "a4");
+      let imgProps = pdf.getImageProperties(imgData);
+      let pdfWidth = pdf.internal.pageSize.getWidth();
+      let pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
+
+      pdf.addImage(imgData, "PNG", 0, 0, pdfWidth, pdfHeight);
+      console.log(pdf);
+
+      pdf.save("quiz-results.pdf");
     },
   },
 };
@@ -114,5 +142,21 @@ export default {
   font-family: Impact, Haettenschweiler, "Arial Narrow Bold", sans-serif;
   color: white;
   -webkit-text-stroke: 3px #000000;
+}
+
+.download-bt-wrapper {
+  display: flex;
+  justify-content: center;
+  margin: 1rem;
+}
+.download-bt {
+  width: auto;
+  background-color: rgb(131, 218, 0)
+  }
+
+.download-bt:hover {
+  transition:all 1s;
+  background-color: #339630;
+
 }
 </style>

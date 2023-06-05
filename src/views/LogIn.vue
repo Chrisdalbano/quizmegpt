@@ -46,6 +46,13 @@
               : "Already have an account? Log In"
           }}
         </button>
+        <button
+          class="toggle-button"
+          v-if="isLoginForm"
+          @click.prevent="resetPassword"
+        >
+          Forgot password?
+        </button>
         <div v-if="loading" class="loading">Loading...</div>
       </div>
     </div>
@@ -53,6 +60,7 @@
 </template>
 
 <script>
+import { sendPasswordResetEmail } from "firebase/auth";
 import { collection, doc, setDoc } from "firebase/firestore";
 import { db } from "@/firebase.js"; // assuming you've exported Firestore instance as 'db' in firebase.js
 import { ref } from "vue";
@@ -76,6 +84,18 @@ export default {
     const successMessage = ref("");
     const store = useStore();
     const loading = ref(false);
+
+    const resetPassword = async () => {
+      let emailToReset = prompt("Please enter your email:");
+      if (emailToReset) {
+        try {
+          await sendPasswordResetEmail(auth, emailToReset);
+          alert("Password reset email!");
+        } catch (e) {
+          alert("Failed to send password reset email: " + e.message);
+        }
+      }
+    };
 
     const logIn = async () => {
       loading.value = true;
@@ -142,6 +162,7 @@ export default {
       isLoginForm,
       toggleForm,
       accountCreated,
+      resetPassword,
     };
   },
 };
