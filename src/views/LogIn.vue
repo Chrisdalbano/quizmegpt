@@ -172,12 +172,12 @@ export default {
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 90vh;
+  height: 80vh;
   padding: 0;
 }
 
 .form-container {
-  width: 400px;
+  width: 300px;
   height: 450px;
   background-color: #ffc973;
   padding: 2rem;

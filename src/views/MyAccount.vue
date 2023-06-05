@@ -7,7 +7,7 @@
       </div>
 
       <p class="greeting-msg"></p>
-      
+
       <h3 v-if="userTitle" class="user-tag">{{ userTitle }}</h3>
       <div v-if="userLevel !== null" class="user-score">
         <p><b>Your Quiz Score is</b></p>
@@ -23,37 +23,36 @@
       </div>
       <div class="quiz-history">
         <button class="history-bt" @click="toggleQuizHistory">
-          <span v-if="!isQuizHistoryOpen">Past quizzes ↓</span>
-          <span v-else>Past quizzes ↑</span>
+          <span v-if="isQuizHistoryOpen">Past quizzes ↑</span>
+          <span v-else>Past quizzes ↓</span>
         </button>
-        <transition name="quiz-history">
-          <div v-if="!isQuizHistoryOpen">
-            <transition-group name="quiz-history-cascade" tag="div">
-              <div
-                v-for="(quiz, index) in quizHistoryData"
-                :key="index"
-                class="quiz-history-item"
-              >
-                <div class="quiz-header">
-                  <h3>Quiz {{ index + 1 }}</h3>
-                  <p>
-                    Your score: {{ quiz.score }} / {{ quiz.questions.length }}
-                  </p>
-                </div>
-                <div class="quiz-questions">
-                  <div
-                    v-for="(question, qIndex) in quiz.questions"
-                    :key="qIndex"
-                    class="question-info"
-                  >
-                    <p>Question {{ question.question }}</p>
-                    <p><strong>Answer:</strong> {{ question.correctAnswer }}</p>
-                  </div>
+        <div v-if="!isQuizHistoryOpen">
+          <transition-group name="quiz-history-item-transition" tag="div">
+            <div
+              v-for="(quiz, index) in quizHistoryData"
+              :key="quiz.id"
+              class="quiz-history-item"
+            >
+              <div class="quiz-header">
+                <h3>Quiz {{ index + 1 }}</h3>
+                <p>
+                  Your score: {{ quiz.score }} / {{ quiz.questions.length }}
+                </p>
+              </div>
+              <div class="quiz-questions">
+                <div
+                  v-for="(question, qIndex) in quiz.questions"
+                  :key="qIndex"
+                  class="question-info"
+                >
+                  <p>Question {{ question.question }}</p>
+                  <p><strong>Answer:</strong> {{ question.correctAnswer }}</p>
                 </div>
               </div>
-            </transition-group>
-          </div>
-        </transition>
+              <button @click="deleteQuiz(quiz.id)">Delete Quiz</button>
+            </div>
+          </transition-group>
+        </div>
       </div>
     </div>
   </div>
@@ -79,6 +78,7 @@ import { signOut } from "firebase/auth";
 import { useRouter } from "vue-router";
 import { useStore } from "vuex";
 import { ref, computed, watch, onMounted } from "vue";
+import { deleteDoc } from "firebase/firestore";
 
 export default {
   name: "MyAccount",
@@ -129,6 +129,22 @@ export default {
       }
     };
 
+    const deleteQuiz = async (quizId) => {
+      if (!quizId) {
+        console.error("QuizId is undefined");
+        return;
+      }
+
+      try {
+        const quizRef = doc(db, "quizHistory", quizId);
+        await deleteDoc(quizRef);
+        // After the quiz is deleted, fetch the updated quiz history.
+        await fetchQuizHistory();
+      } catch (error) {
+        console.error("Error deleting document: ", error);
+      }
+    };
+
     const fetchQuizHistory = async () => {
       if (loggedInUser.value) {
         const userId = loggedInUser.value.uid;
@@ -140,7 +156,10 @@ export default {
             orderBy("timestamp", "desc")
           )
         );
-        quizHistoryData.value = querySnapshot.docs.map((doc) => doc.data());
+        quizHistoryData.value = querySnapshot.docs.map((doc) => ({
+          ...doc.data(),
+          id: doc.id, // Add this line to store the id
+        }));
       }
     };
 
@@ -171,6 +190,7 @@ export default {
       isQuizHistoryOpen: computed(() => isQuizHistoryOpen.value),
       toggleQuizHistory,
       showQuizHistory,
+      deleteQuiz,
     };
   },
 };
@@ -279,26 +299,28 @@ button {
   display: inline-flex;
 }
 .top-wrap {
-    display: flex;
-    justify-content: space-between; /* This will keep the items at the opposite ends of the container */
-    align-items: center;
+  display: flex;
+  justify-content: space-between; /* This will keep the items at the opposite ends of the container */
+  align-items: center;
+}
+
+.user-display,
+.logout-bt {
+  /* The flex property is a shorthand property for flex-grow, flex-shrink, and flex-basis */
+  flex: 1 0 auto;
+}
+
+/* Media query */
+@media screen and (max-width: 600px) {
+  .top-wrap {
+    flex-direction: column;
   }
 
-  .user-display, .logout-bt {
-    /* The flex property is a shorthand property for flex-grow, flex-shrink, and flex-basis */
-    flex: 1 0 auto;
+  .user-display,
+  .logout-bt {
+    flex: none;
   }
-
-  /* Media query */
-  @media screen and (max-width: 600px) {
-    .top-wrap {
-      flex-direction: column;
-    }
-
-    .user-display, .logout-bt {
-      flex: none;
-    }
-  }
+}
 
 .user-display {
   color: rgb(43, 43, 43);
@@ -361,5 +383,16 @@ button {
     font-size: 0.6rem;
     padding: 0.3rem 0.6rem;
   }
+}
+
+.quiz-history-item-transition-enter-active,
+.quiz-history-item-transition-leave-active {
+  transition: all 0.5s ease;
+}
+
+.quiz-history-item-transition-enter,
+.quiz-history-item-transition-leave-to {
+  opacity: 0;
+  transform: translateY(-10px);
 }
 </style>
